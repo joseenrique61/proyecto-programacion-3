@@ -1,16 +1,11 @@
 package EstructurasDeDatos;
 
-import Entidades.Actividad;
-import Entidades.Emprendimiento;
-import Entidades.Persona;
-import Entidades.Usuario;
-
 import java.util.*;
 
 public class Grafo {
     private final Map<String, Nodo> grafo = new Hashtable<>();
 
-    public boolean agregarPersonaOEmprendimiento(ElementoDeNodo elementoDeNodo) {
+    public boolean agregarElemento(ElementoDeNodo elementoDeNodo) {
         if (grafo.get(elementoDeNodo.getIdentificador()) != null) {
             return false;
         }
@@ -19,39 +14,16 @@ public class Grafo {
         return true;
     }
 
-    public boolean agregarActividad(Actividad actividad, Emprendimiento emprendimientoAsociado) {
-        if (grafo.get(emprendimientoAsociado.getNombre()) == null) {
-            return false;
-        }
-
-        ArrayList<ElementoDeNodo> actividadArray = new ArrayList<>();
-        actividadArray.add(emprendimientoAsociado);
-
-        grafo.put(actividad.getIdentificador(), new Nodo(actividad, actividadArray));
-        grafo.get(emprendimientoAsociado.getNombre()).getConexiones().add(actividad);
-
-        return true;
+    public ElementoDeNodo getElemento(String identificador) {
+        return grafo.get(identificador).getNodo();
     }
 
-    public Actividad getActividad(String nombre, Emprendimiento emprendimientoAsociado) {
-        return (Actividad) grafo.get(emprendimientoAsociado.getNombre() + nombre).getNodo();
-    }
-
-    public Usuario getUsuario(String usuario, String contrasena) {
+    public ArrayList<ElementoDeNodo> getValues() {
+        ArrayList<ElementoDeNodo> values = new ArrayList<>();
         for (Nodo nodo : grafo.values()) {
-            if (nodo.getNodo() instanceof Usuario && Objects.equals(((Usuario) nodo.getNodo()).getUsuario(), usuario) && Objects.equals(((Usuario) nodo.getNodo()).getContrasena(), contrasena)) {
-                return (Usuario) nodo.getNodo();
-            }
+            values.add(nodo.getNodo());
         }
-        return null;
-    }
-
-    public Emprendimiento getEmprendimiento(String nombre) {
-        return (Emprendimiento) grafo.get(nombre).getNodo();
-    }
-
-    public Persona getPersona(String cedula) {
-        return (Persona) grafo.get(cedula).getNodo();
+        return values;
     }
 
     public boolean eliminarElemento(ElementoDeNodo elementoDeNodo) {
@@ -65,5 +37,23 @@ public class Grafo {
 
         grafo.remove(elementoDeNodo.getIdentificador());
         return true;
+    }
+
+    public boolean agregarConexion(ElementoDeNodo elemento1, ElementoDeNodo elemento2) {
+        if (grafo.get(elemento1.getIdentificador()) == null || grafo.get(elemento2.getIdentificador()) == null) {
+            return false;
+        }
+
+        grafo.get(elemento1.getIdentificador()).getConexiones().add(elemento2);
+        grafo.get(elemento2.getIdentificador()).getConexiones().add(elemento1);
+        return true;
+    }
+
+    public ArrayList<ElementoDeNodo> getConexiones(ElementoDeNodo elementoDeNodo) {
+        if (grafo.get(elementoDeNodo.getIdentificador()) == null) {
+            return null;
+        }
+
+        return grafo.get(elementoDeNodo.getIdentificador()).getConexiones();
     }
 }

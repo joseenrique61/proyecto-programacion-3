@@ -2,8 +2,10 @@ package Servicios;
 
 import Entidades.Administrador;
 import Entidades.Usuario;
+import EstructurasDeDatos.ElementoDeNodo;
 import EstructurasDeDatos.Grafo;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class ManejadorDeUsuarios {
@@ -20,6 +22,12 @@ public class ManejadorDeUsuarios {
             return administrador;
         }
 
-        return grafo.getUsuario(usuario, contrasena);
+        for (ElementoDeNodo elemento : grafo.getValues()) {
+            if (elemento instanceof Usuario && Objects.equals(((Usuario)elemento).getUsuario(), usuario) && Objects.equals(((Usuario)elemento).getContrasena(), contrasena)) {
+                return (Usuario) elemento;
+            }
+        }
+
+        return null;
     }
 }
