@@ -1,6 +1,8 @@
 package Entidades;
 
-public class Emprendimiento extends Usuario {
+import EstructurasDeDatos.ElementoDeNodo;
+
+public class Emprendimiento extends Usuario implements ElementoDeNodo {
     private final String nombre;
 
     public String getNombre() {
@@ -10,5 +12,10 @@ public class Emprendimiento extends Usuario {
     public Emprendimiento(String usuario, String contrasena, String nombre) {
         super(usuario, contrasena);
         this.nombre = nombre;
+    }
+
+    @Override
+    public String getIdentificador() {
+        return nombre;
     }
 }

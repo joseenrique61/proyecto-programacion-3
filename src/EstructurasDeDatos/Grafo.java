@@ -8,130 +8,62 @@ import Entidades.Usuario;
 import java.util.*;
 
 public class Grafo {
-    private final Dictionary<Object, ArrayList<Object>> grafo = new Hashtable<>();
+    private final Map<String, Nodo> grafo = new Hashtable<>();
 
-    private final ArrayList<Object> objetos = new ArrayList<>();
-
-    public boolean agregarEmprendimiento(Emprendimiento emprendimiento) {
-        if (grafo.get(emprendimiento.getNombre()) != null) {
+    public boolean agregarPersonaOEmprendimiento(ElementoDeNodo elementoDeNodo) {
+        if (grafo.get(elementoDeNodo.getIdentificador()) != null) {
             return false;
         }
 
-        grafo.put(emprendimiento.getNombre(), new ArrayList<>());
-
-        objetos.add(emprendimiento);
+        grafo.put(elementoDeNodo.getIdentificador(), new Nodo(elementoDeNodo));
         return true;
     }
 
-    public boolean agregarPersona(Persona persona) {
-        if (grafo.get(persona.getCedula()) != null) {
+    public boolean agregarActividad(Actividad actividad, Emprendimiento emprendimientoAsociado) {
+        if (grafo.get(emprendimientoAsociado.getNombre()) == null) {
             return false;
         }
 
-        grafo.put(persona.getCedula(), new ArrayList<>());
+        ArrayList<ElementoDeNodo> actividadArray = new ArrayList<>();
+        actividadArray.add(emprendimientoAsociado);
 
-        objetos.add(persona);
+        grafo.put(actividad.getIdentificador(), new Nodo(actividad, actividadArray));
+        grafo.get(emprendimientoAsociado.getNombre()).getConexiones().add(actividad);
+
         return true;
     }
 
-    public boolean agregarActividad(Actividad actividad, Emprendimiento emprendimiento) {
-        if (grafo.get(emprendimiento.getNombre()) == null) {
-            return false;
-        }
-
-        ArrayList<Object> actividadArray = new ArrayList<>();
-        actividadArray.add(emprendimiento);
-
-        grafo.put(actividad.getId(), actividadArray);
-        grafo.get(emprendimiento.getNombre()).add(actividad);
-
-        objetos.add(actividad);
-        return true;
-    }
-
-    public Actividad getActividad(int id) {
-        for (Object objeto : objetos) {
-            if (objeto instanceof Actividad) {
-                if (((Actividad) objeto).getId() == id) {
-                    return (Actividad) objeto;
-                }
-            }
-        }
-        return null;
+    public Actividad getActividad(String nombre, Emprendimiento emprendimientoAsociado) {
+        return (Actividad) grafo.get(emprendimientoAsociado.getNombre() + nombre).getNodo();
     }
 
     public Usuario getUsuario(String usuario, String contrasena) {
-        for (Object object : objetos) {
-            if (object instanceof Usuario && Objects.equals(((Usuario) object).getUsuario(), usuario) && Objects.equals(((Usuario) object).getUsuario(), usuario)) {
-                return (Usuario) object;
+        for (Nodo nodo : grafo.values()) {
+            if (nodo.getNodo() instanceof Usuario && Objects.equals(((Usuario) nodo.getNodo()).getUsuario(), usuario) && Objects.equals(((Usuario) nodo.getNodo()).getContrasena(), contrasena)) {
+                return (Usuario) nodo.getNodo();
             }
         }
         return null;
     }
 
     public Emprendimiento getEmprendimiento(String nombre) {
-        for (Object objeto : objetos) {
-            if (objeto instanceof Emprendimiento) {
-                if (Objects.equals(((Emprendimiento) objeto).getNombre(), nombre)) {
-                    return (Emprendimiento) objeto;
-                }
-            }
-        }
-        return null;
+        return (Emprendimiento) grafo.get(nombre).getNodo();
     }
 
     public Persona getPersona(String cedula) {
-        for (Object objeto : objetos) {
-            if (objeto instanceof Persona) {
-                if (Objects.equals(((Persona) objeto).getCedula(), cedula)) {
-                    return (Persona) objeto;
-                }
-            }
-        }
-        return null;
+        return (Persona) grafo.get(cedula).getNodo();
     }
 
-    public boolean eliminarPersona(Persona persona) {
-        if (grafo.get(persona.getCedula()) == null){
+    public boolean eliminarElemento(ElementoDeNodo elementoDeNodo) {
+        if (grafo.get(elementoDeNodo.getIdentificador()) == null){
             return false;
         }
 
-        for (Object object : grafo.get(persona)) {
-            grafo.get(((Actividad)object).getId()).remove(persona);
-        }
-        grafo.remove(persona.getCedula());
-        objetos.remove(persona);
-        return true;
-    }
-
-    public boolean eliminarEmprendimiento(Emprendimiento emprendimiento) {
-        if (grafo.get(emprendimiento.getNombre()) == null){
-            return false;
+        for (ElementoDeNodo elemento : grafo.get(elementoDeNodo.getIdentificador()).getConexiones()) {
+            grafo.get(elemento.getIdentificador()).getConexiones().remove(elementoDeNodo);
         }
 
-        for (Object object : grafo.get(emprendimiento)) {
-            grafo.get(((Actividad)object).getId()).remove(emprendimiento);
-        }
-        grafo.remove(emprendimiento.getNombre());
-        objetos.remove(emprendimiento);
-        return true;
-    }
-
-    public boolean eliminarActividad(Actividad actividad) {
-        if (grafo.get(actividad.getId()) == null){
-            return false;
-        }
-
-        for (Object object : grafo.get(actividad)) {
-            if (object instanceof Persona) {
-                grafo.get(((Persona)object).getCedula()).remove(actividad);
-            }
-            else {
-                grafo.get(((Emprendimiento)object).getNombre()).remove(actividad);
-            }
-        }
-        grafo.remove(actividad.getId());
-        objetos.remove(actividad);
+        grafo.remove(elementoDeNodo.getIdentificador());
         return true;
     }
 }

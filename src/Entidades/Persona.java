@@ -1,6 +1,8 @@
 package Entidades;
 
-public class Persona extends Usuario {
+import EstructurasDeDatos.ElementoDeNodo;
+
+public class Persona extends Usuario implements ElementoDeNodo {
     private final String cedula;
 
     private final String nombre;
@@ -17,5 +19,10 @@ public class Persona extends Usuario {
         super(usuario, contrasena);
         this.cedula = cedula;
         this.nombre = nombre;
+    }
+
+    @Override
+    public String getIdentificador() {
+        return cedula;
     }
 }

@@ -1,21 +1,21 @@
 package Entidades;
 
-public class Actividad {
+public class Actividad implements EstructurasDeDatos.ElementoDeNodo {
     private final String nombre;
 
-    private final int id;
+    private final String id;
 
-    public Actividad(String nombre, int id) {
+    public Actividad(String nombre, Emprendimiento emprendimientoAsociado) {
         this.nombre = nombre;
-        this.id = id;
+        this.id = emprendimientoAsociado.getNombre() + nombre;
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public int getId() {
+    @Override
+    public String getIdentificador() {
         return id;
     }
-
 }
