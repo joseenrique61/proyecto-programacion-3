@@ -2,17 +2,17 @@ package Entidades;
 
 import Servicios.ManejadorDeUsuarios;
 
-import javax.swing.*;
-import java.util.Collections;
-
 public class Actividad implements EstructurasDeDatos.ElementoDeNodo {
     private final String nombre;
 
-    private final String id;
+    private final String capacidad;
+    private final String descripcion;
 
-    public Actividad(String nombre, Emprendimiento emprendimientoAsociado) {
+    public Actividad(String nombre, /*Emprendimiento emprendimientoAsociado*/String capacidad, String descripcion) {
         this.nombre = nombre;
-        this.id = emprendimientoAsociado.getNombre() + nombre;
+        this.descripcion = descripcion;
+        //this.capacidad = emprendimientoAsociado.getNombre() + nombre;
+        this.capacidad = capacidad;
     }
     public void asignarUsuarios(Persona usuario,Actividad actividad){
         ManejadorDeUsuarios.getGrafo().agregarElemento(usuario);
@@ -33,6 +33,6 @@ public class Actividad implements EstructurasDeDatos.ElementoDeNodo {
 
     @Override
     public String getIdentificador() {
-        return id;
+        return capacidad;
     }
 }
