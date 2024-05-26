@@ -25,6 +25,7 @@ public class Actividad implements EstructurasDeDatos.ElementoDeNodo {
 
     public String visualizarUsuariosActividad(Actividad actividad){
         ManejadorDeUsuarios.getGrafo().getConexiones(actividad);
+        return "";
     }
     public String getNombre() {
         return nombre;

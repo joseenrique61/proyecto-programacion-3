@@ -32,7 +32,11 @@ public class Emprendimiento extends Usuario implements ElementoDeNodo {
         ManejadorDeUsuarios.getGrafo().eliminarElemento(actividad);
     }
     public String getCalificacion() {
-        return "";
+        int calificacionEmprendimiento=0;
+        for (Calificacion calificacion : listacalificacion) {
+            calificacionEmprendimiento+=calificacion.getPuntuacion();
+        }
+        return "La calificacion del emprendimiento es:" + (calificacionEmprendimiento/ listacalificacion.size());
     }
     public String CalificacionesPorPuntaje() {
         StringBuilder respuesta = new StringBuilder();
