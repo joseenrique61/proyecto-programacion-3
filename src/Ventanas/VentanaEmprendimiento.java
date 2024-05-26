@@ -27,7 +27,9 @@ public class VentanaEmprendimiento extends Ventana {
     private JTextArea txtAreaImpresionListaUsuariosPertenecientesAUnaActividad;
 
     protected VentanaEmprendimiento(Ventana inicioDeSesion, Emprendimiento emprendimiento) {
-        super(emprendimiento.getNombre(), 100, 100, inicioDeSesion);
+        super(emprendimiento.getNombre(), 1000, 1000, inicioDeSesion);
+        setContentPane(panel1);
+
     }
 
 

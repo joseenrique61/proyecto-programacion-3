@@ -11,7 +11,7 @@ import java.util.Objects;
 public class ManejadorDeUsuarios {
     private static final Administrador administrador = new Administrador("admin", "admin");
 
-    private static final Grafo grafo = new Grafo();
+    public static final Grafo grafo = new Grafo();
 
     public static Grafo getGrafo() {
         return grafo;

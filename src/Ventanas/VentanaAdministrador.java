@@ -6,7 +6,7 @@ public class VentanaAdministrador extends Ventana {
     private JPanel panel1;
 
     protected VentanaAdministrador(Ventana inicioDeSesion) {
-        super("Administrador", 100, 100, inicioDeSesion);
+        super("Administrador", 1000, 1000, inicioDeSesion);
         setContentPane(panel1);
     }
 }
