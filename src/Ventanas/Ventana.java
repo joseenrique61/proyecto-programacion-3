@@ -5,7 +5,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class Ventana extends JFrame {
-    private final Ventana inicioDeSesion;
+    protected final Ventana inicioDeSesion;
 
     protected Ventana(String titulo, int altura, int ancho, Ventana inicioDeSesion) {
         this.inicioDeSesion = inicioDeSesion;
@@ -19,13 +19,22 @@ public class Ventana extends JFrame {
 
     public void setWindowClosing() {
         // Establece la acción que se debe hacer cuando se cierra la ventana
-        WindowAdapter exitListener = new WindowAdapter() {
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public  void windowClosing(WindowEvent e){
+                if(inicioDeSesion != null){
+                    inicioDeSesion.setVisible(true);
+                }
+                dispose();
+            }
+        });
+        /*WindowAdapter exitListener = new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
                 // Muestra la ventana anterior
                 inicioDeSesion.setVisible(true);
             }
         };
-        this.addWindowListener(exitListener);
+        this.addWindowListener(exitListener);*/
     }
 }
