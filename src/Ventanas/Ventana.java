@@ -6,10 +6,10 @@ import java.awt.event.WindowEvent;
 
 
 public class Ventana extends JFrame {
-    protected final Ventana inicioDeSesion;
+    protected final Ventana ventanaAnterior;
 
-    protected Ventana(String titulo, int altura, int ancho, Ventana inicioDeSesion) {
-        this.inicioDeSesion = inicioDeSesion;
+    protected Ventana(String titulo, int altura, int ancho, Ventana ventanaAnterior) {
+        this.ventanaAnterior = ventanaAnterior;
         this.setTitle(titulo);
         this.setSize(ancho, altura);
 
@@ -23,19 +23,11 @@ public class Ventana extends JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public  void windowClosing(WindowEvent e){
-                if(inicioDeSesion != null){
-                    inicioDeSesion.setVisible(true);
+                if(ventanaAnterior != null){
+                    ventanaAnterior.setVisible(true);
                 }
                 dispose();
             }
         });
-        /*WindowAdapter exitListener = new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-                // Muestra la ventana anterior
-                inicioDeSesion.setVisible(true);
-            }
-        };
-        this.addWindowListener(exitListener);*/
     }
 }

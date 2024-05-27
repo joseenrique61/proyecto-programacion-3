@@ -2,13 +2,9 @@ package Ventanas;
 
 import Entidades.Emprendimiento;
 import Entidades.Persona;
-import Servicios.ManejadorDeUsuarios;
+import Servicios.ManejadorDeGrafo;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class RegistrarUsuario extends Ventana {
@@ -20,80 +16,54 @@ public class RegistrarUsuario extends Ventana {
     private JPanel pPersona;
     private JPanel pEmprendimiento;
     private JTextField txtNombrePersona;
-    private JButton INGRESARButton;
     private JTextField txtCedula;
-    private JButton btnRegistrarPersona;
+    private JButton btnRegistrar;
     private JTextField txtNombreEmprendimiento;
-    private JTextField txtUicacion;
-    private JButton btnRegistrarEmprendimiento;
-    private JButton INGRESARButton1;
-    private JPanel mainPanel;
+    private JTextField txtUbicacion;
 
     protected RegistrarUsuario(Ventana inicioDeSesion) {
         super("Registrar usuario", 400, 400, inicioDeSesion);
         setContentPane(panel1);
-        pPersona.setVisible(false);
-        pEmprendimiento.setVisible(false);
 
-        rbEmprendimiento.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(rbEmprendimiento.isSelected()){
-                    pEmprendimiento.setVisible(true);
-                    pPersona.setVisible(false);
-                    panel1.revalidate();
-                    panel1.repaint();
-                }
+        rbEmprendimiento.addActionListener(e -> {
+            if(rbEmprendimiento.isSelected()){
+                pEmprendimiento.setVisible(true);
+                pPersona.setVisible(false);
             }
         });
-        rbPersona.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(rbPersona.isSelected()){
-                    pPersona.setVisible(true);
-                    pEmprendimiento.setVisible(false);
-                    panel1.revalidate();
-                    panel1.repaint();
-                }
+        rbPersona.addActionListener(e -> {
+            if(rbPersona.isSelected()){
+                pPersona.setVisible(true);
+                pEmprendimiento.setVisible(false);
             }
         });
-        btnRegistrarPersona.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String usuario = txtUsuario.getText();
-                String contrasenia = txtContrasenia.getText();
+
+        btnRegistrar.addActionListener(e -> {
+            String usuario = txtUsuario.getText();
+            String contrasena = txtContrasenia.getText();
+
+            if (rbPersona.isSelected()) {
                 String nombre = txtNombrePersona.getText();
                 String cedula = txtCedula.getText();
-                ManejadorDeUsuarios.getGrafo().agregarElemento(new Persona(usuario,contrasenia,nombre,cedula));
-                JOptionPane.showMessageDialog(null, "USUARIO REGISTRADO");
-                cerrarVentana();
+                if (!ManejadorDeGrafo.getGrafo().agregarElemento(new Persona(usuario,contrasena,cedula,nombre))) {
+                    JOptionPane.showMessageDialog(null, "Ya existe una persona con esta cédula.");
+                    return;
+                }
             }
-        });
-        btnRegistrarEmprendimiento.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String usuario = txtUsuario.getText();
-                String contrasenia = txtContrasenia.getText();
-                String nombreEm= txtNombreEmprendimiento.getText();
-                String ubicacion = txtUicacion.getText();
-                ManejadorDeUsuarios.getGrafo().agregarElemento(new Emprendimiento(usuario,contrasenia,nombreEm,ubicacion));
-                JOptionPane.showMessageDialog(null, "USUARIO REGISTRADO");
-                cerrarVentana();
+            else {
+                String nombre = txtNombreEmprendimiento.getText();
+                String ubicacion = txtUbicacion.getText();
+                if (!ManejadorDeGrafo.getGrafo().agregarElemento(new Emprendimiento(usuario,contrasena,nombre,ubicacion))) {
+                    JOptionPane.showMessageDialog(null, "Ya existe un emprendimiento con este nombre.");
+                    return;
+                }
             }
+            JOptionPane.showMessageDialog(null, "Usuario registrado");
+
+            if (ventanaAnterior instanceof VentanaAdministrador ventanaAdministrador) {
+                ventanaAdministrador.actualizar();
+            }
+            this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
         });
     }
-    public void cerrarVentana() {
-        this.dispose();
-        Ventana ventanaInvocadora = getVentanaInvocadora();
-        if (ventanaInvocadora != null) {
-            ventanaInvocadora.setVisible(true);
-        }
-    }
-    private Ventana getVentanaInvocadora() {
-        return inicioDeSesion;
-    }
-
-
-
-
 }

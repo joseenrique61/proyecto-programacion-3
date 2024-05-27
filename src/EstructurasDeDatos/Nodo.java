@@ -7,11 +7,6 @@ public class Nodo {
 
     private final ArrayList<ElementoDeNodo> conexiones;
 
-    protected Nodo(ElementoDeNodo nodo, ArrayList<ElementoDeNodo> conexiones) {
-        this.nodo = nodo;
-        this.conexiones = conexiones;
-    }
-
     protected Nodo(ElementoDeNodo nodo) {
         this.nodo = nodo;
         conexiones = new ArrayList<>();

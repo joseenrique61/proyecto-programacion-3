@@ -15,6 +15,9 @@ public class Grafo {
     }
 
     public ElementoDeNodo getElemento(String identificador) {
+        if (grafo.get(identificador) == null) {
+            return null;
+        }
         return grafo.get(identificador).getNodo();
     }
 
@@ -55,5 +58,15 @@ public class Grafo {
         }
 
         return grafo.get(elementoDeNodo.getIdentificador()).getConexiones();
+    }
+
+    public boolean eliminarConexion(ElementoDeNodo elemento1, ElementoDeNodo elemento2) {
+        if (grafo.get(elemento1.getIdentificador()) == null || grafo.get(elemento2.getIdentificador()) == null) {
+            return false;
+        }
+
+        grafo.get(elemento1.getIdentificador()).getConexiones().remove(elemento2);
+        grafo.get(elemento2.getIdentificador()).getConexiones().remove(elemento1);
+        return true;
     }
 }

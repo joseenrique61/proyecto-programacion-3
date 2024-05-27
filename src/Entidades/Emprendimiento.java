@@ -1,64 +1,83 @@
 package Entidades;
 
 import EstructurasDeDatos.ElementoDeNodo;
-import Servicios.ManejadorDeUsuarios;
+import Servicios.ManejadorDeGrafo;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Emprendimiento extends Usuario implements ElementoDeNodo {
     private final String nombre;
-    private String ubicacion;
-    private ArrayList<Calificacion> listacalificacion;
+    private final String ubicacion;
+
     public String getNombre() {
         return nombre;
     }
 
-    public Emprendimiento(String usuario, String contrasena, String nombre,String ubicacion) {
+    public Emprendimiento(String usuario, String contrasena, String nombre, String ubicacion) {
         super(usuario, contrasena);
-        listacalificacion=new ArrayList<>();
         this.nombre = nombre;
-        this.ubicacion = nombre;
+        this.ubicacion = ubicacion;
     }
+
     public String getUbicacion() {
         return ubicacion;
     }
-    public void addActividad(Actividad actividad,Emprendimiento emprendimiento){
-        ManejadorDeUsuarios.getGrafo().agregarElemento(actividad);
-        ManejadorDeUsuarios.getGrafo().agregarConexion(actividad,emprendimiento);
-    }
-    public void deleteActividad(Actividad actividad){
-        ManejadorDeUsuarios.getGrafo().eliminarElemento(actividad);
-    }
-    public String getCalificacion() {
-        int calificacionEmprendimiento=0;
-        for (Calificacion calificacion : listacalificacion) {
-            calificacionEmprendimiento+=calificacion.getPuntuacion();
-        }
-        return "La calificacion del emprendimiento es:" + (calificacionEmprendimiento/ listacalificacion.size());
-    }
-    public String CalificacionesPorPuntaje() {
-        StringBuilder respuesta = new StringBuilder();
-        if (listacalificacion.isEmpty()){
-            JOptionPane.showMessageDialog(null,"No hay elementos en la lista");
 
+    public boolean addActividad(Actividad actividad){
+        if (!ManejadorDeGrafo.getGrafo().agregarElemento(actividad)) {
+            JOptionPane.showMessageDialog(null, "Ya existe una actividad con este nombre.");
+            return false;
         }
-        else {
-            Collections.sort(listacalificacion);
-            respuesta.append("Lista de calificaciones ordenadas:\n");
-            for (Calificacion calificacion : listacalificacion) {
-                respuesta.append("Nombre:").append(calificacion.getAutor()).append("\n");
-                respuesta.append("Comentario:").append(calificacion.getComentario()).append("\n");
-                respuesta.append("Puntuacion:").append(calificacion.getPuntuacion()).append("\n");
-                respuesta.append("-------------------\n");
+        ManejadorDeGrafo.getGrafo().agregarConexion(actividad, this);
+        return true;
+    }
+
+    public ArrayList<Actividad> getActividades() {
+        ArrayList<Actividad> actividades = new ArrayList<>();
+        for (ElementoDeNodo elementoDeNodo : ManejadorDeGrafo.getGrafo().getConexiones(this)) {
+            if (elementoDeNodo instanceof Actividad) {
+                actividades.add((Actividad) elementoDeNodo);
             }
         }
-        return respuesta.toString();
+        return actividades;
+    }
+
+    public void deleteActividad(Actividad actividad){
+        ManejadorDeGrafo.getGrafo().eliminarElemento(actividad);
+    }
+
+    public int getCantidadPersonasEnActividades() {
+        Set<Persona> personas = new HashSet<>();
+        for (ElementoDeNodo elementoDeNodo : ManejadorDeGrafo.getGrafo().getConexiones(this)) {
+            if (elementoDeNodo instanceof Actividad) {
+                personas.addAll(((Actividad)elementoDeNodo).visualizarPersonas());
+            }
+        }
+        return personas.size();
+    }
+
+    public float getCalificacion() {
+        float sumaCalificacion = 0;
+        float cantidad = 0;
+        for (ElementoDeNodo elementoDeNodo : ManejadorDeGrafo.getGrafo().getConexiones(this)) {
+            if (elementoDeNodo instanceof Actividad) {
+                sumaCalificacion += ((Actividad)elementoDeNodo).getCalificacionPromedio();
+                cantidad++;
+            }
+        }
+        return cantidad != 0 ? sumaCalificacion / cantidad : 0;
     }
 
     @Override
     public String getIdentificador() {
         return nombre;
+    }
+
+    @Override
+    public String toString() {
+        return "Nombre: " + nombre + ", ubicación: " + ubicacion;
     }
 }

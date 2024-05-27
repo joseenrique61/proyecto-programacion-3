@@ -4,7 +4,7 @@ import Entidades.Administrador;
 import Entidades.Emprendimiento;
 import Entidades.Persona;
 import Entidades.Usuario;
-import Servicios.ManejadorDeUsuarios;
+import Servicios.ManejadorDeGrafo;
 
 import javax.swing.*;
 import java.util.Objects;
@@ -27,13 +27,15 @@ public class InicioDeSesion extends Ventana {
                 return;
             }
 
-            Usuario usuario = ManejadorDeUsuarios.getUsuario(txtUsuario.getText(), txtContrasena.getText());
+            Usuario usuario = ManejadorDeGrafo.getUsuario(txtUsuario.getText(), txtContrasena.getText());
             if (usuario == null) {
                 JOptionPane.showMessageDialog(null, "El usuario o la contraseña son incorrectos.");
                 return;
             }
 
             abrirVentanaDeUsuario(usuario);
+            txtUsuario.setText("");
+            txtContrasena.setText("");
         });
 
         registrarNuevoUsuarioButton.addActionListener(e -> {

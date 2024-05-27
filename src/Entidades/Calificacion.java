@@ -1,14 +1,18 @@
 package Entidades;
 
-public class Calificacion implements Comparable<Calificacion> {
-    private int puntuacion;
-    private String comentario;
-    private Persona autor;
+import EstructurasDeDatos.ElementoDeNodo;
 
-    public Calificacion(int puntuacion, String comentario, Persona autor) {
+public class Calificacion implements ElementoDeNodo, Comparable<Calificacion> {
+    private final String id;
+
+    private final int puntuacion;
+
+    private final String comentario;
+
+    public Calificacion(int puntuacion, String comentario, Persona autor, Actividad actividadCalificada) {
         this.puntuacion = puntuacion;
         this.comentario = comentario;
-        this.autor = autor;
+        this.id = autor.getIdentificador() + actividadCalificada.getIdentificador();
     }
 
     public int getPuntuacion() {
@@ -19,8 +23,9 @@ public class Calificacion implements Comparable<Calificacion> {
         return comentario;
     }
 
-    public Persona getAutor() {
-        return autor;
+    @Override
+    public String getIdentificador() {
+        return id;
     }
 
     @Override

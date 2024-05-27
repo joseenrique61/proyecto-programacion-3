@@ -5,13 +5,12 @@ import Entidades.Usuario;
 import EstructurasDeDatos.ElementoDeNodo;
 import EstructurasDeDatos.Grafo;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
-public class ManejadorDeUsuarios {
+public class ManejadorDeGrafo {
     private static final Administrador administrador = new Administrador("admin", "admin");
 
-    public static final Grafo grafo = new Grafo();
+    private static final Grafo grafo = new Grafo();
 
     public static Grafo getGrafo() {
         return grafo;

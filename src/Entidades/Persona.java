@@ -25,4 +25,9 @@ public class Persona extends Usuario implements ElementoDeNodo {
     public String getIdentificador() {
         return cedula;
     }
+
+    @Override
+    public String toString() {
+        return "Nombre: " + nombre + ", cédula: " + cedula;
+    }
 }
