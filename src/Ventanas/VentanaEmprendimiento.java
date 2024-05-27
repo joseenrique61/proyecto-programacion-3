@@ -100,7 +100,6 @@ public class VentanaEmprendimiento extends Ventana {
                 return;
             }
             if (!actividad.eliminarPersona((Persona) cbPersonaEliminar.getSelectedItem())) {
-                JOptionPane.showMessageDialog(null, "No se ha encontrado la cédula.");
                 return;
             }
             setComboBoxPersonas();
@@ -117,6 +116,10 @@ public class VentanaEmprendimiento extends Ventana {
         btnEliminarActividad.addActionListener(e -> {
             Actividad actividad = (Actividad) cbActividadEliminar.getSelectedItem();
             emprendimiento.deleteActividad(actividad);
+            JOptionPane.showMessageDialog(null, "La actividad ha sido eliminada");
+            taInformacionActividadEliminar.setText("");
+            setTable();
+            setComboBoxesDeActividades();
         });
     }
 
