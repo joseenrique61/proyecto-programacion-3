@@ -10,15 +10,17 @@ public class Actividad implements EstructurasDeDatos.ElementoDeNodo {
 
     private final String nombre;
 
-    private final int capacidad;
+    private  int capacidad;
 
     private final String descripcion;
+    private final String nombreEmprendimiento;
 
     public Actividad(String nombre, Emprendimiento emprendimientoAsociado, int capacidad, String descripcion) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.id = emprendimientoAsociado.getNombre() + nombre;
         this.capacidad = capacidad;
+        this.nombreEmprendimiento = emprendimientoAsociado.getNombre();
     }
 
     public boolean agregarPersona(Persona persona) {
@@ -59,6 +61,15 @@ public class Actividad implements EstructurasDeDatos.ElementoDeNodo {
     public int getCapacidad() {
         return capacidad;
     }
+
+    public void setCapacidad(int capacidad) {
+        this.capacidad = capacidad;
+    }
+
+    public String getEmprendimientoAsociado() {
+        return nombreEmprendimiento;
+    }
+
 
     public int getPersonasInscritas() {
         int cantidad = 0;

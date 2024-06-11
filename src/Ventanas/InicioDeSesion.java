@@ -32,7 +32,6 @@ public class InicioDeSesion extends Ventana {
                 JOptionPane.showMessageDialog(null, "El usuario o la contraseña son incorrectos.");
                 return;
             }
-
             abrirVentanaDeUsuario(usuario);
             txtUsuario.setText("");
             txtContrasena.setText("");
