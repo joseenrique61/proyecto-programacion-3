@@ -92,7 +92,7 @@ public class VentanaPersona extends Ventana {
             if (nodo instanceof Actividad && ((Actividad) nodo).getNombre().equals(nombre)) {
                 ((Actividad) nodo).setCapacidad(((Actividad) nodo).getCapacidad()-1);
                 if(((Actividad) nodo).getCapacidad() <0){
-                    JOptionPane.showMessageDialog(null,"YA NO HAY CAPACIDAD EN LA ACTIVIDAD");
+                    JOptionPane.showMessageDialog(null,"YA NO HAY CAPACIDAD EN LA ACTIVIDAD-");
                     break;
                 }
                 return (Actividad) nodo;
