@@ -33,6 +33,7 @@ public class VentanaEmprendimiento extends Ventana {
 
     private final Emprendimiento emprendimiento;
 
+
     protected VentanaEmprendimiento(Ventana inicioDeSesion, Emprendimiento emprendimiento) {
         super(emprendimiento.getNombre(), 550, 600, inicioDeSesion);
         setContentPane(panel1);
@@ -51,8 +52,7 @@ public class VentanaEmprendimiento extends Ventana {
                 if (!emprendimiento.addActividad(new Actividad(txtNombreActividad.getText(), emprendimiento, Integer.parseInt(spCapacidad.getValue().toString()), txtDescripicion.getText()))) {
                     return;
                 }
-            }
-            catch (NumberFormatException exception) {
+            } catch (NumberFormatException exception) {
                 JOptionPane.showMessageDialog(null, "La cantidad no es válida.");
                 return;
             }
@@ -95,22 +95,28 @@ public class VentanaEmprendimiento extends Ventana {
         });
 
         btnEliminarPersona.addActionListener(e -> {
-            Actividad actividad = ((Actividad)cbActividadEliminarPersona.getSelectedItem());
-            if (actividad == null) {
-                return;
+            Actividad actividad = (Actividad) cbActividadEliminarPersona.getSelectedItem();
+            Persona persona = (Persona) cbPersonaEliminar.getSelectedItem();
+            if (actividad != null && persona != null) {
+                if (actividad.eliminarPersona(persona)) {
+                    JOptionPane.showMessageDialog(null, "Persona eliminada.");
+                    setComboBoxPersonas(); // Actualiza el ComboBox de personas
+                } else {
+                    JOptionPane.showMessageDialog(null, "No se pudo eliminar la persona.");
+                }
             }
-            if (!actividad.eliminarPersona((Persona) cbPersonaEliminar.getSelectedItem())) {
-                return;
-            }
-            setComboBoxPersonas();
         });
 
         cbActividadEliminar.addActionListener(e -> {
-            Actividad actividad = (Actividad)cbActividadEliminar.getSelectedItem();
+            Actividad actividad = (Actividad) cbActividadEliminar.getSelectedItem();
             if (actividad == null) {
                 return;
             }
             taInformacionActividadEliminar.setText(actividad.toStringLargo());
+        });
+
+        cbActividadEliminarPersona.addActionListener(e -> {
+            setComboBoxPersonas();
         });
 
         btnEliminarActividad.addActionListener(e -> {
@@ -136,33 +142,39 @@ public class VentanaEmprendimiento extends Ventana {
         defaultTableModel.addColumn("Personas inscritas");
         defaultTableModel.addColumn("Calificación promedio");
 
-        defaultTableModel.addRow(new Object[] {"Nombre", "Capacidad", "Descripción", "Personas inscritas", "Calificación promedio"});
+        defaultTableModel.addRow(new Object[]{"Nombre", "Capacidad", "Descripción", "Personas inscritas", "Calificación promedio"});
 
         for (Actividad actividad : emprendimiento.getActividades()) {
-            defaultTableModel.addRow(new Object[] {actividad.getNombre(), actividad.getCapacidad(), actividad.getDescripcion(), actividad.getPersonasInscritas(), actividad.getCalificacionPromedio()});
+            defaultTableModel.addRow(new Object[]{actividad.getNombre(), actividad.getCapacidad(), actividad.getDescripcion(), actividad.getPersonasInscritas(), actividad.getCalificacionPromedio()});
         }
 
         tbActividades.setModel(defaultTableModel);
     }
 
     private void setComboBoxPersonas() {
-        DefaultComboBoxModel<Persona> personas = new DefaultComboBoxModel<>();
-        Actividad actividad = ((Actividad)cbActividadEliminarPersona.getSelectedItem());
-        if (actividad == null) {
-            return;
+        DefaultComboBoxModel<Persona> personasModel = new DefaultComboBoxModel<>();
+        Actividad actividad = (Actividad) cbActividadEliminarPersona.getSelectedItem();
+        if (actividad != null) {
+            for (Persona persona : actividad.visualizarPersonas()) {
+                personasModel.addElement(persona);
+            }
         }
-        personas.addAll(actividad.visualizarPersonas());
+        cbPersonaEliminar.setModel(personasModel);
     }
 
     private void setComboBoxesDeActividades() {
-        DefaultComboBoxModel<Actividad> actividades = new DefaultComboBoxModel<>();
+        DefaultComboBoxModel<Actividad> actividadesModel = new DefaultComboBoxModel<>();
         for (Actividad actividad : emprendimiento.getActividades()) {
-            actividades.addElement(actividad);
+            actividadesModel.addElement(actividad);
         }
 
-        cbActividadEliminar.setModel(actividades);
-        cbActividadInformacion.setModel(actividades);
-        cbActividadEliminarPersona.setModel(actividades);
-        cbActividadAsginar.setModel(actividades);
+        cbActividadEliminar.setModel(actividadesModel);
+        cbActividadInformacion.setModel(actividadesModel);
+        cbActividadEliminarPersona.setModel(actividadesModel);
+        cbActividadAsginar.setModel(actividadesModel);
+        setComboBoxPersonas();
     }
+
+
+
 }
