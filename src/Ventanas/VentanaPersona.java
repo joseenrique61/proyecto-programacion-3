@@ -14,91 +14,104 @@ import java.awt.event.ActionListener;
 public class VentanaPersona extends Ventana {
     private JPanel panel1;
     private JTextArea taActividades;
-    private JButton btnUnirse;
+    private JButton btnSeguir;
     private JTextArea taActividadSeguida;
-    private JComboBox<String> cbActividad;
-    private JTable tbActividades;
     private JTabbedPane unirse;
+    private JList<String> listActividadesSeguidas;
+    private JList<String> listaActividades;
     private JTable tbActividadesSeguidas;
     DefaultTableModel dtm = new DefaultTableModel();
     DefaultTableModel dtm2 = new DefaultTableModel();
     private Persona persona;
     private Emprendimiento emprendimiento;
-
-    public void configurarTabla1() {
-        dtm.addColumn("ANFITRION");
-        dtm.addColumn("NOMBRE DE ACTIVIDAD");
-        dtm.addColumn("CAPACIDAD");
-        dtm.addColumn("DESCRIPCIÓN");
-        dtm.addRow(new Object[]{"ANFITRION", "NOMBRE DE ACTIVIDAD", "CAPACIDAD", "DESCRIPCION"});
-        tbActividades.setModel(dtm);
-    }
-
-
-    public void configurarTabla2() {
-        dtm2.addColumn("ANFITRION");
-        dtm2.addColumn("NOMBRE DE ACTIVIDAD");
-        dtm2.addColumn("CAPACIDAD");
-        dtm2.addColumn("DESCRIPCIÓN");
-        dtm2.addRow(new Object[]{"ANFITRION", "NOMBRE DE ACTIVIDAD", "CAPACIDAD", "DESCRIPCION"});
-        tbActividadesSeguidas.setModel(dtm2);
-    }
-
+    DefaultListModel<String> modelo = new DefaultListModel<>();
+    DefaultListModel<String> modeloSeguidas = new DefaultListModel<>();
 
     protected VentanaPersona(Ventana inicioDeSesion, Persona persona) {
-        super(persona.getNombre(), 1000, 1000, inicioDeSesion);
+        super(persona.getNombre(), 600, 1000, inicioDeSesion);
         setContentPane(panel1);
         this.persona = persona;
         this.emprendimiento = null;
-        configurarTabla1();
-        configurarTabla2();
         mostrarActividades();
-        setComboBoxActividades();
-
-
-        btnUnirse.addActionListener(new ActionListener() {
+        btnSeguir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String seleccion = cbActividad.getSelectedItem().toString();
-                String[] partes = seleccion.split(" : ");
-                String nombreActividad = partes[1];
-                Actividad actividad = getInfoActividad(nombreActividad);
-                if (actividad != null) {
-                    dtm2.addRow(new Object[]{actividad.getEmprendimientoAsociado(), actividad.getNombre(), actividad.getCapacidad(), actividad.getDescripcion()});
+                String actividadSeleccionada = listaActividades.getSelectedValue();
+                if (actividadSeleccionada != null) {
+                    String[] partes = actividadSeleccionada.split("[:\\-]");
+                    String actividadNombre = partes[4].trim();
+                    String actividadEmprendimiento = partes[2].trim();
+                    if (actualizarCapacidad(actividadNombre, actividadEmprendimiento)) {
+                        agregarActividadSeguida(actividadNombre, actividadEmprendimiento);
+                        mostrarActividades();
+                    }
                 }
             }
         });
     }
 
-    public void mostrarActividades() {
+    private void mostrarActividades() {
+        modelo.clear();
         for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
             if (nodo instanceof Actividad) {
-                dtm.addRow(new Object[]{((Actividad) nodo).getEmprendimientoAsociado(), ((Actividad) nodo).getNombre(), ((Actividad) nodo).getCapacidad(), ((Actividad) nodo).getDescripcion()});
+                String actividad = "-ANFITRION: " + ((Actividad) nodo).getEmprendimientoAsociado() +
+                        "    -ACTIVIDAD: " + ((Actividad) nodo).getNombre() +
+                        "    -CAPACIDAD: " + ((Actividad) nodo).getCapacidad() +
+                        "    -DESCRIPCIÓN: " + ((Actividad) nodo).getDescripcion();
+                modelo.addElement(actividad);
             }
         }
+        listaActividades.setModel(modelo);
     }
 
-    private void setComboBoxActividades() {
-        for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
-            if (nodo instanceof Actividad) {
-                String actividad = ((Actividad) nodo).getEmprendimientoAsociado() + " : " + ((Actividad) nodo).getNombre();
-                cbActividad.addItem(actividad);
+    private void agregarActividadSeguida(String nombreActi, String emprendimientoAso) {
+        boolean found = false;
+        for (int i = 0; i < modeloSeguidas.getSize(); i++) {
+            String actividad = modeloSeguidas.getElementAt(i);
+            if (actividad.contains(nombreActi) && actividad.contains(emprendimientoAso)) {
+                String[] partes = actividad.split("[:\\-]");
+                int capacidad = Integer.parseInt(partes[6].trim());
+                capacidad--;
+                String nuevaActividad = "-ANFITRION: " + emprendimientoAso +
+                        "    -ACTIVIDAD: " + nombreActi +
+                        "    -CAPACIDAD: " + capacidad +
+                        "    -DESCRIPCIÓN: " + partes[8].trim();
+                modeloSeguidas.setElementAt(nuevaActividad, i);
+                found = true;
+                break;
             }
         }
-    }
-
-    private Actividad getInfoActividad(String nombre) {
-        for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
-            if (nodo instanceof Actividad && ((Actividad) nodo).getNombre().equals(nombre)) {
-                ((Actividad) nodo).setCapacidad(((Actividad) nodo).getCapacidad()-1);
-                if(((Actividad) nodo).getCapacidad() <0){
-                    JOptionPane.showMessageDialog(null,"YA NO HAY CAPACIDAD EN LA ACTIVIDAD-");
+        if (!found) {
+            for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
+                if (nodo instanceof Actividad &&
+                        ((Actividad) nodo).getNombre().equals(nombreActi) &&
+                        ((Actividad) nodo).getEmprendimientoAsociado().equals(emprendimientoAso)) {
+                    String actividad = "-ANFITRION: " + ((Actividad) nodo).getEmprendimientoAsociado() +
+                            "    -ACTIVIDAD: " + ((Actividad) nodo).getNombre() +
+                            "    -CAPACIDAD: " + ((Actividad) nodo).getCapacidad() +
+                            "    -DESCRIPCIÓN: " + ((Actividad) nodo).getDescripcion();
+                    modeloSeguidas.addElement(actividad);
                     break;
                 }
-                return (Actividad) nodo;
             }
         }
-        return null;
+        listActividadesSeguidas.setModel(modeloSeguidas);
     }
 
+    private boolean actualizarCapacidad(String nombreActi, String emprendimientoAso) {
+        for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
+            if (nodo instanceof Actividad &&
+                    ((Actividad) nodo).getNombre().equals(nombreActi) &&
+                    ((Actividad) nodo).getEmprendimientoAsociado().equals(emprendimientoAso)) {
+
+                if (((Actividad) nodo).getCapacidad() <= 0) {
+                    JOptionPane.showMessageDialog(null, "YA NO HAY CAPACIDAD PARA LA ACTIVIDAD");
+                    return false;
+                }
+                ((Actividad) nodo).setCapacidad(((Actividad) nodo).getCapacidad() - 1);
+                return true;
+            }
+        }
+        return false;
+    }
 }
