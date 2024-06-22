@@ -7,6 +7,8 @@ import Servicios.ManejadorDeGrafo;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Objects;
 
 public class VentanaEmprendimiento extends Ventana {
@@ -30,12 +32,14 @@ public class VentanaEmprendimiento extends Ventana {
     private JSpinner spCapacidad;
     private JTable tbActividades;
     private JComboBox<Actividad> cbActividadAsginar;
+    private JButton btnEmprendimientoCalificacion;
+    private JButton btn;
 
     private final Emprendimiento emprendimiento;
 
 
-    protected VentanaEmprendimiento(Ventana inicioDeSesion, Emprendimiento emprendimiento) {
-        super(emprendimiento.getNombre(), 550, 600, inicioDeSesion);
+    protected VentanaEmprendimiento(Ventana ventana, Emprendimiento emprendimiento) {
+        super(emprendimiento.getNombre(), 550, 600, ventana);
         setContentPane(panel1);
         this.emprendimiento = emprendimiento;
         setTable();
@@ -126,6 +130,12 @@ public class VentanaEmprendimiento extends Ventana {
             taInformacionActividadEliminar.setText("");
             setTable();
             setComboBoxesDeActividades();
+        });
+        btnEmprendimientoCalificacion.addActionListener(e ->  {
+            this.setVisible(false);
+
+            VentanaCalificacion ventanaCalificacion = new VentanaCalificacion(this);
+            ventanaCalificacion.setVisible(true);
         });
     }
 

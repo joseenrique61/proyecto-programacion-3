@@ -1,6 +1,7 @@
 package Ventanas;
 
 import Entidades.Actividad;
+import Entidades.Calificacion;
 import Entidades.Emprendimiento;
 import Entidades.Persona;
 import EstructurasDeDatos.ElementoDeNodo;
@@ -19,6 +20,11 @@ public class VentanaPersona extends Ventana {
     private JTabbedPane unirse;
     private JList<String> listActividadesSeguidas;
     private JList<String> listaActividades;
+    private JComboBox cboElegirCalificacion;
+    private JTextField txtComentario;
+    private JButton btnSubir;
+    private JButton btnCalificacionPersona;
+    private JList listActividadesCalificar;
     private JTable tbActividadesSeguidas;
     DefaultTableModel dtm = new DefaultTableModel();
     DefaultTableModel dtm2 = new DefaultTableModel();
@@ -27,12 +33,16 @@ public class VentanaPersona extends Ventana {
     DefaultListModel<String> modelo = new DefaultListModel<>();
     DefaultListModel<String> modeloSeguidas = new DefaultListModel<>();
 
-    protected VentanaPersona(Ventana inicioDeSesion, Persona persona) {
-        super(persona.getNombre(), 600, 1000, inicioDeSesion);
-        setContentPane(panel1);
-        this.persona = persona;
+    protected VentanaPersona(Ventana ventana, Persona persona) {
+        super("Ventana Persona", 500, 500, null);
+        this.setContentPane(panel1);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.emprendimiento = null;
+        this.persona = persona;
         mostrarActividades();
+        for (int i = 1; i <= 10; i++) {
+            cboElegirCalificacion.addItem(i);
+        }
         btnSeguir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -48,7 +58,20 @@ public class VentanaPersona extends Ventana {
                 }
             }
         });
+        btnSubir.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                subirCalificacionYComentario();
+            }
+        });
+        btnCalificacionPersona.addActionListener(e ->  {
+            this.setVisible(false);
+
+            VentanaCalificacion ventanaCalificacion = new VentanaCalificacion(this);
+            ventanaCalificacion.setVisible(true);
+        });
     }
+
 
     private void mostrarActividades() {
         modelo.clear();
@@ -96,6 +119,7 @@ public class VentanaPersona extends Ventana {
             }
         }
         listActividadesSeguidas.setModel(modeloSeguidas);
+        listActividadesCalificar.setModel(modeloSeguidas);
     }
 
     private boolean actualizarCapacidad(String nombreActi, String emprendimientoAso) {
@@ -114,4 +138,48 @@ public class VentanaPersona extends Ventana {
         }
         return false;
     }
+    private void subirCalificacionYComentario() {
+        String actividadSeleccionadaStr = (String) listActividadesCalificar.getSelectedValue();
+        Integer calificacionSeleccionada = (Integer) cboElegirCalificacion.getSelectedItem();
+        String comentario = txtComentario.getText();
+
+        if (actividadSeleccionadaStr == null || comentario.isEmpty() || calificacionSeleccionada == null) {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar una actividad, una calificación y escribir un comentario.");
+            return;
+        }
+
+        String[] partes = actividadSeleccionadaStr.split("[:\\-]");
+        String actividadNombre = partes[4].trim();
+        String actividadEmprendimiento = partes[2].trim();
+
+        Actividad actividadSeleccionada = null;
+        for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
+            if (nodo instanceof Actividad) {
+                Actividad actividad = (Actividad) nodo;
+                if (actividad.getNombre().equals(actividadNombre) && actividad.getEmprendimientoAsociado().equals(actividadEmprendimiento)) {
+                    actividadSeleccionada = actividad;
+                    break;
+                }
+            }
+        }
+
+        if (actividadSeleccionada == null) {
+            JOptionPane.showMessageDialog(null, "Actividad no encontrada.");
+            return;
+        }
+
+        if (persona == null) {
+            JOptionPane.showMessageDialog(null, "Persona no inicializada.");
+            return;
+        }
+
+        Calificacion calificacion = new Calificacion(calificacionSeleccionada, comentario, persona, actividadSeleccionada);
+        ManejadorDeGrafo.getGrafo().agregarElemento(calificacion);
+        ManejadorDeGrafo.getGrafo().agregarConexion(calificacion, actividadSeleccionada);
+        ManejadorDeGrafo.getGrafo().agregarConexion(calificacion, persona);
+
+        JOptionPane.showMessageDialog(null, "Calificación y comentario subidos exitosamente.");
+        txtComentario.setText("");
+    }
+
 }

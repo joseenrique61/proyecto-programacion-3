@@ -44,23 +44,17 @@ public class InicioDeSesion extends Ventana {
             registrarUsuario.setVisible(true);
         });
     }
-
     private void abrirVentanaDeUsuario(Usuario usuario) {
-        switch (usuario) {
-            case Persona ignored:
-                VentanaPersona ventanaPersona = new VentanaPersona(this, (Persona)usuario);
-                ventanaPersona.setVisible(true);
-                break;
-            case Emprendimiento ignored:
-                VentanaEmprendimiento ventanaEmprendimiento = new VentanaEmprendimiento(this, (Emprendimiento) usuario);
-                ventanaEmprendimiento.setVisible(true);
-                break;
-            case Administrador ignored:
-                VentanaAdministrador ventanaAdministrador = new VentanaAdministrador(this);
-                ventanaAdministrador.setVisible(true);
-                break;
-            default:
-                break;
+        if (usuario instanceof Persona) {
+            VentanaPersona ventanaPersona = new VentanaPersona(this, (Persona) usuario);
+            ventanaPersona.setVisible(true);
+        } else if (usuario instanceof Emprendimiento) {
+            VentanaEmprendimiento ventanaEmprendimiento = new VentanaEmprendimiento(this, (Emprendimiento) usuario);
+            ventanaEmprendimiento.setVisible(true);
+        } else if (usuario instanceof Administrador) {
+            VentanaAdministrador ventanaAdministrador = new VentanaAdministrador(this);
+            ventanaAdministrador.setVisible(true);
         }
     }
+
 }
