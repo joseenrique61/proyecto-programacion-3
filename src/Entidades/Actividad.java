@@ -81,9 +81,9 @@ public class Actividad implements EstructurasDeDatos.ElementoDeNodo {
         return cantidad;
     }
 
-    public float getCalificacionPromedio() {
-        float suma = 0;
-        float cantidad = 0;
+    public int getCalificacionPromedio() {
+        int suma = 0;
+        int cantidad = 0;
         for (ElementoDeNodo elementoDeNodo : ManejadorDeGrafo.getGrafo().getConexiones(this)) {
             if (elementoDeNodo instanceof Calificacion) {
                 suma += ((Calificacion) elementoDeNodo).getPuntuacion();
