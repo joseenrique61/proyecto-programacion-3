@@ -93,6 +93,38 @@ public class Actividad implements EstructurasDeDatos.ElementoDeNodo {
         return cantidad != 0 ? suma / cantidad : 0;
     }
 
+    public boolean agregarForo(Foro foro) {
+        if (foro == null) {
+            return false;
+        }
+
+        ManejadorDeGrafo.getGrafo().agregarConexion(foro, foro.getActividad());
+        return true;
+    }
+
+    public boolean eliminarForo(Foro foro) {
+        return ManejadorDeGrafo.getGrafo().eliminarConexion(this, foro);
+    }
+
+    public ArrayList<Foro> visualizarForos() {
+        ArrayList<Foro> foros = new ArrayList<>();
+        for (ElementoDeNodo elementoDeNodo : ManejadorDeGrafo.getGrafo().getConexiones(this)) {
+            if (elementoDeNodo instanceof Foro) {
+                foros.add((Foro) elementoDeNodo);
+            }
+        }
+        return foros;
+    }
+    public int getForosIngresados() {
+        int cantidad = 0;
+        for (ElementoDeNodo elementoDeNodo : ManejadorDeGrafo.getGrafo().getConexiones(this)) {
+            if (elementoDeNodo instanceof Foro) {
+                cantidad++;
+            }
+        }
+        return cantidad;
+    }
+
     @Override
     public String toString() {
         return nombre;
@@ -111,4 +143,6 @@ public class Actividad implements EstructurasDeDatos.ElementoDeNodo {
                 "\n Calificación promedio: " + getCalificacionPromedio() +
                 "\n Personas inscritas: " + personas;
     }
+
+
 }
