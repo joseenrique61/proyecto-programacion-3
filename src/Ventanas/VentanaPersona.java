@@ -1,9 +1,6 @@
 package Ventanas;
 
-import Entidades.Actividad;
-import Entidades.Calificacion;
-import Entidades.Emprendimiento;
-import Entidades.Persona;
+import Entidades.*;
 import EstructurasDeDatos.ElementoDeNodo;
 import Servicios.ManejadorDeGrafo;
 
@@ -25,6 +22,10 @@ public class VentanaPersona extends Ventana {
     private JButton btnSubir;
     private JButton btnCalificacionPersona;
     private JList listActividadesCalificar;
+    private JList listNombreForos;
+    private JButton btnIngresarAForo;
+    private JComboBox cboActividadesForo;
+    private JTextField txtNombreForo;
     private JTable tbActividadesSeguidas;
     DefaultTableModel dtm = new DefaultTableModel();
     DefaultTableModel dtm2 = new DefaultTableModel();
@@ -64,13 +65,21 @@ public class VentanaPersona extends Ventana {
                 subirCalificacionYComentario();
             }
         });
-        btnCalificacionPersona.addActionListener(e ->  {
+        btnCalificacionPersona.addActionListener(e -> {
             this.setVisible(false);
 
             VentanaCalificacion ventanaCalificacion = new VentanaCalificacion(this);
             ventanaCalificacion.setVisible(true);
         });
+        btnIngresarAForo.addActionListener(e -> {
+            this.setVisible(false);
+
+            VentanaForo ventanaForo = new VentanaForo(this);
+            ventanaForo.setVisible(true);
+
+        });
     }
+
 
 
     private void mostrarActividades() {
@@ -181,5 +190,15 @@ public class VentanaPersona extends Ventana {
         JOptionPane.showMessageDialog(null, "Calificación y comentario subidos exitosamente.");
         txtComentario.setText("");
     }
+    public void agregarForo(){
+        String nombreForo = txtNombreForo.getText();
+        if (nombreForo.isEmpty()){
+            JOptionPane.showMessageDialog(null, "Por favor ingresar nombre de foro" );
+            return;
+        }
+        //*Foro foro = new Foro();
+
+    }
+
 
 }

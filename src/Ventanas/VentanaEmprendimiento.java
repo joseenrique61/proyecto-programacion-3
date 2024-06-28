@@ -93,7 +93,6 @@ public class VentanaEmprendimiento extends Ventana {
                 JOptionPane.showMessageDialog(null, "No se ha encontrado la cédula.");
                 return;
             }
-
             JOptionPane.showMessageDialog(null, "Persona agregada.");
             txtCedula.setText("");
         });
