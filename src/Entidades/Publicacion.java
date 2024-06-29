@@ -2,15 +2,23 @@ package Entidades;
 
 import EstructurasDeDatos.ElementoDeNodo;
 
+import java.time.LocalDateTime;
+
+import java.time.format.DateTimeFormatter;
+
 public class Publicacion  implements ElementoDeNodo {
     private Persona autor;
     private String comentario;
     private Foro foro;
 
+    private LocalDateTime fecha_hora;
+
+
     public Publicacion(Persona autor, String comentario, Foro foro) {
         this.autor = autor;
         this.comentario = comentario;
         this.foro = foro;
+        this.fecha_hora=LocalDateTime.now();
     }
 
     public Persona getAutor() {
@@ -27,7 +35,8 @@ public class Publicacion  implements ElementoDeNodo {
 
     @Override
     public String toString() {
-        return  "Autor=" + autor + " \nComentario='" + comentario +"\n";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return  "Autor=" + autor + " \nComentario='" + comentario +"\n"+ "\nFecha y Hora='" + fecha_hora.format(formatter) + "\n";
     }
 
     @Override

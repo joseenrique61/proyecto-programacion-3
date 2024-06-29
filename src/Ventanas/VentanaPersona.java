@@ -17,14 +17,14 @@ public class VentanaPersona extends Ventana {
     private JTabbedPane unirse;
     private JList<String> listActividadesSeguidas;
     private JList<String> listaActividades;
-    private JComboBox cboElegirCalificacion;
+    private JComboBox<Integer> cboElegirCalificacion;
     private JTextField txtComentario;
     private JButton btnSubir;
     private JButton btnCalificacionPersona;
-    private JList listActividadesCalificar;
-    private JList listNombreForos;
+    private JList<String> listActividadesCalificar;
     private JButton btnIngresarAForo;
-    private JComboBox cboActividadesForo;
+    private JComboBox<String> cboActividadesForo;
+    private JList list1;
     private JTextField txtNombreForo;
     private JTable tbActividadesSeguidas;
     DefaultTableModel dtm = new DefaultTableModel();
@@ -40,10 +40,18 @@ public class VentanaPersona extends Ventana {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.emprendimiento = null;
         this.persona = persona;
+
+        // Inicializa los modelos y las listas
+        listaActividades.setModel(modelo);
+        listActividadesSeguidas.setModel(modeloSeguidas);
+        listActividadesCalificar.setModel(modeloSeguidas);
+
         mostrarActividades();
+
         for (int i = 1; i <= 10; i++) {
             cboElegirCalificacion.addItem(i);
         }
+
         btnSeguir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -55,32 +63,31 @@ public class VentanaPersona extends Ventana {
                     if (actualizarCapacidad(actividadNombre, actividadEmprendimiento)) {
                         agregarActividadSeguida(actividadNombre, actividadEmprendimiento);
                         mostrarActividades();
+                        actualizarCboActividadesForo();
                     }
                 }
             }
         });
+
         btnSubir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 subirCalificacionYComentario();
             }
         });
+
         btnCalificacionPersona.addActionListener(e -> {
             this.setVisible(false);
-
             VentanaCalificacion ventanaCalificacion = new VentanaCalificacion(this);
             ventanaCalificacion.setVisible(true);
         });
+
         btnIngresarAForo.addActionListener(e -> {
             this.setVisible(false);
-
             VentanaForo ventanaForo = new VentanaForo(this);
             ventanaForo.setVisible(true);
-
         });
     }
-
-
 
     private void mostrarActividades() {
         modelo.clear();
@@ -93,7 +100,6 @@ public class VentanaPersona extends Ventana {
                 modelo.addElement(actividad);
             }
         }
-        listaActividades.setModel(modelo);
     }
 
     private void agregarActividadSeguida(String nombreActi, String emprendimientoAso) {
@@ -127,8 +133,6 @@ public class VentanaPersona extends Ventana {
                 }
             }
         }
-        listActividadesSeguidas.setModel(modeloSeguidas);
-        listActividadesCalificar.setModel(modeloSeguidas);
     }
 
     private boolean actualizarCapacidad(String nombreActi, String emprendimientoAso) {
@@ -147,8 +151,16 @@ public class VentanaPersona extends Ventana {
         }
         return false;
     }
+    private void actualizarCboActividadesForo() {
+        cboActividadesForo.removeAllItems();
+        for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
+            if (nodo instanceof Actividad) {
+                cboActividadesForo.addItem(((Actividad) nodo).getNombre());
+            }
+        }
+    }
     private void subirCalificacionYComentario() {
-        String actividadSeleccionadaStr = (String) listActividadesCalificar.getSelectedValue();
+        String actividadSeleccionadaStr = listActividadesCalificar.getSelectedValue();
         Integer calificacionSeleccionada = (Integer) cboElegirCalificacion.getSelectedItem();
         String comentario = txtComentario.getText();
 
@@ -190,15 +202,4 @@ public class VentanaPersona extends Ventana {
         JOptionPane.showMessageDialog(null, "Calificación y comentario subidos exitosamente.");
         txtComentario.setText("");
     }
-    public void agregarForo(){
-        String nombreForo = txtNombreForo.getText();
-        if (nombreForo.isEmpty()){
-            JOptionPane.showMessageDialog(null, "Por favor ingresar nombre de foro" );
-            return;
-        }
-        //*Foro foro = new Foro();
-
-    }
-
-
 }
