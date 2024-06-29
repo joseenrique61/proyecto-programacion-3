@@ -83,9 +83,19 @@ public class VentanaPersona extends Ventana {
         });
 
         btnIngresarAForo.addActionListener(e -> {
-            this.setVisible(false);
-            VentanaForo ventanaForo = new VentanaForo(this);
-            ventanaForo.setVisible(true);
+            String actividadSeleccionada = (String) cboActividadesForo.getSelectedItem();
+            if (actividadSeleccionada != null) {
+                Actividad actividad = obtenerActividadPorNombre(actividadSeleccionada);
+                if (actividad != null) {
+                    this.setVisible(false);
+                    VentanaForo ventanaForo = new VentanaForo(this, actividad.getNombre(), actividad.getEmprendimientoAsociado());
+                    ventanaForo.setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Actividad no encontrada.");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Seleccione una actividad del foro.");
+            }
         });
     }
 
@@ -158,6 +168,14 @@ public class VentanaPersona extends Ventana {
                 cboActividadesForo.addItem(((Actividad) nodo).getNombre());
             }
         }
+    }
+    private Actividad obtenerActividadPorNombre(String nombre) {
+        for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
+            if (nodo instanceof Actividad && ((Actividad) nodo).getNombre().equals(nombre)) {
+                return (Actividad) nodo;
+            }
+        }
+        return null;
     }
     private void subirCalificacionYComentario() {
         String actividadSeleccionadaStr = listActividadesCalificar.getSelectedValue();

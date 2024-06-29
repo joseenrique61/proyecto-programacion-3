@@ -1,12 +1,13 @@
 package Ventanas;
 
 import Entidades.*;
-import EstructurasDeDatos.ElementoDeNodo;
 import Servicios.ManejadorDeGrafo;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class VentanaForo extends Ventana{
+public class VentanaForo extends Ventana {
     private JPanel VentanitaForo;
     private JLabel NombreForoLabel;
     private JTextArea txtPublicaciones;
@@ -16,26 +17,30 @@ public class VentanaForo extends Ventana{
     private Foro foro;
     private Persona persona;
 
-    private Publicacion p;
-
-    private Actividad actividad;
-
-    protected VentanaForo(Ventana ventana) {
-        super("Foro", 400, 400, ventana);
+    protected VentanaForo(Ventana ventana, String actividadNombre, String emprendimientoAsociado) {
+        super("Foro: " + actividadNombre, 400, 400, ventana);
         this.setContentPane(VentanitaForo);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.foro = null;
         this.publicacion = publicacion;
+
+        NombreForoLabel.setText("Foro: " + actividadNombre + " - " + emprendimientoAsociado);
+
+        btnPublicar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                subirComentario();
+            }
+        });
     }
+
     private void subirComentario() {
         String comentario = txtComentarioForo.getText();
 
-        if (comentario == null) {
-            JOptionPane.showMessageDialog(null, "Debe escribir un comentario");
+        if (comentario.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Debe escribir un comentario.");
             return;
         }
-
-
 
         if (persona == null) {
             JOptionPane.showMessageDialog(null, "Persona no inicializada.");
@@ -46,7 +51,7 @@ public class VentanaForo extends Ventana{
         ManejadorDeGrafo.getGrafo().agregarElemento(publicacion1);
         ManejadorDeGrafo.getGrafo().agregarConexion(publicacion1, persona);
 
-        JOptionPane.showMessageDialog(null, "Publicacion subida exitosamente");
-
+        JOptionPane.showMessageDialog(null, "Publicación subida exitosamente.");
+        txtComentarioForo.setText("");
     }
 }
