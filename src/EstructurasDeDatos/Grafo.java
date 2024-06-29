@@ -1,5 +1,7 @@
 package EstructurasDeDatos;
 
+import Entidades.Publicacion;
+
 import java.util.*;
 
 public class Grafo {
@@ -68,5 +70,17 @@ public class Grafo {
         grafo.get(elemento1.getIdentificador()).getConexiones().remove(elemento2);
         grafo.get(elemento2.getIdentificador()).getConexiones().remove(elemento1);
         return true;
+    }
+
+    public List<Publicacion> obtenerPublicacionesOrdenadasPorFecha() {
+        List<Publicacion> publicaciones = new ArrayList<>();
+        for (Nodo nodo : grafo.values()) {
+            ElementoDeNodo elemento = nodo.getNodo();
+            if (elemento instanceof Publicacion) {
+                publicaciones.add((Publicacion) elemento);
+            }
+        }
+        Collections.sort(publicaciones, Comparator.comparing(Publicacion::getFecha_hora));
+        return publicaciones;
     }
 }

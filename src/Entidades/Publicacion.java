@@ -33,6 +33,10 @@ public class Publicacion  implements ElementoDeNodo {
         return foro;
     }
 
+    public LocalDateTime getFecha_hora() {
+        return fecha_hora;
+    }
+
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -42,5 +46,5 @@ public class Publicacion  implements ElementoDeNodo {
     @Override
     public String getIdentificador() {
         return foro.getIdentificador()+autor.getIdentificador();
-    }
+}
 }

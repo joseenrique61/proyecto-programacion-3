@@ -16,14 +16,16 @@ public class VentanaForo extends Ventana{
     private Foro foro;
     private Persona persona;
 
+    private Publicacion p;
+
+    private Actividad actividad;
+
     protected VentanaForo(Ventana ventana) {
         super("Foro", 400, 400, ventana);
         this.setContentPane(VentanitaForo);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.foro = null;
         this.publicacion = publicacion;
-
-
     }
     private void subirComentario() {
         String comentario = txtComentarioForo.getText();
@@ -45,6 +47,6 @@ public class VentanaForo extends Ventana{
         ManejadorDeGrafo.getGrafo().agregarConexion(publicacion1, persona);
 
         JOptionPane.showMessageDialog(null, "Publicacion subida exitosamente");
-        txtComentarioForo.setText("");
+
     }
 }
