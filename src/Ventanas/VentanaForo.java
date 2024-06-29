@@ -21,37 +21,34 @@ public class VentanaForo extends Ventana {
         super("Foro: " + actividadNombre, 400, 400, ventana);
         this.setContentPane(VentanitaForo);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.foro = null;
-        this.publicacion = publicacion;
+        this.foro = foro;
+        this.publicacion = null;
 
         NombreForoLabel.setText("Foro: " + actividadNombre + " - " + emprendimientoAsociado);
 
         btnPublicar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                subirComentario();
+                 subirComentario();
             }
         });
     }
 
     private void subirComentario() {
         String comentario = txtComentarioForo.getText();
-
         if (comentario.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Debe escribir un comentario.");
             return;
         }
-
-        if (persona == null) {
-            JOptionPane.showMessageDialog(null, "Persona no inicializada.");
+        if (foro == null) {
+            JOptionPane.showMessageDialog(null, "El foro no está disponible.");
             return;
         }
-
+        txtComentarioForo.setText(comentario);
         Publicacion publicacion1 = new Publicacion(persona, comentario, foro);
         ManejadorDeGrafo.getGrafo().agregarElemento(publicacion1);
         ManejadorDeGrafo.getGrafo().agregarConexion(publicacion1, persona);
-
         JOptionPane.showMessageDialog(null, "Publicación subida exitosamente.");
-        txtComentarioForo.setText("");
+      ;
     }
 }
