@@ -30,7 +30,7 @@ public class VentanaPersona extends Ventana {
     private JTable tbActividadesSeguidas;
     DefaultTableModel dtm = new DefaultTableModel();
     DefaultTableModel dtm2 = new DefaultTableModel();
-    private Persona persona;
+    private final Persona persona;
     DefaultListModel<String> modelo = new DefaultListModel<>();
     DefaultListModel<String> modeloSeguidas = new DefaultListModel<>();
 
@@ -88,7 +88,7 @@ public class VentanaPersona extends Ventana {
                 Actividad actividad = obtenerActividadPorNombre(actividadSeleccionada);
                 if (actividad != null) {
                     this.setVisible(false);
-                    VentanaForo ventanaForo = new VentanaForo(this, actividad.getNombre(), actividad.getEmprendimientoAsociado());
+                    VentanaForo ventanaForo = new VentanaForo(this, (Foro) ManejadorDeGrafo.getGrafo().getConexiones(actividad).get(1), persona);
                     ventanaForo.setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(null, "Actividad no encontrada.");
@@ -185,7 +185,7 @@ public class VentanaPersona extends Ventana {
                     JOptionPane.showMessageDialog(null, "Ya no hay espacio en esta actividad.");
                     return false;
                 }
-                if (((Actividad) nodo).agregarPersona(persona)) {
+                if (!((Actividad) nodo).agregarPersona(persona)) {
                     JOptionPane.showMessageDialog(null, "Ya estás inscrito en esta actividad.");
                     return false;
                 }
@@ -265,7 +265,10 @@ public class VentanaPersona extends Ventana {
         }
 
         Calificacion calificacion = new Calificacion(calificacionSeleccionada, comentario, persona, actividadSeleccionada);
-        ManejadorDeGrafo.getGrafo().agregarElemento(calificacion);
+        if (!ManejadorDeGrafo.getGrafo().agregarElemento(calificacion)) {
+            JOptionPane.showMessageDialog(null, "Ya hiciste un comentario de esta actividad.");
+            return;
+        }
         ManejadorDeGrafo.getGrafo().agregarConexion(calificacion, actividadSeleccionada);
         ManejadorDeGrafo.getGrafo().agregarConexion(calificacion, persona);
 

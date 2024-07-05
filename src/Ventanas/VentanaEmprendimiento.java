@@ -2,6 +2,7 @@ package Ventanas;
 
 import Entidades.Actividad;
 import Entidades.Emprendimiento;
+import Entidades.Foro;
 import Entidades.Persona;
 import Servicios.ManejadorDeGrafo;
 
@@ -53,9 +54,16 @@ public class VentanaEmprendimiento extends Ventana {
             }
 
             try {
-                if (!emprendimiento.addActividad(new Actividad(txtNombreActividad.getText(), emprendimiento, Integer.parseInt(spCapacidad.getValue().toString()), txtDescripicion.getText()))) {
+                Actividad actividad = new Actividad(txtNombreActividad.getText(), emprendimiento, Integer.parseInt(spCapacidad.getValue().toString()), txtDescripicion.getText());
+                if (!ManejadorDeGrafo.getGrafo().agregarElemento(actividad)) {
+                    JOptionPane.showMessageDialog(null, "Ya existe una actividad con este nombre.");
                     return;
                 }
+                emprendimiento.addActividad(actividad);
+
+                Foro foro = new Foro(actividad);
+                ManejadorDeGrafo.getGrafo().agregarElemento(foro);
+                actividad.agregarForo(foro);
             } catch (NumberFormatException exception) {
                 JOptionPane.showMessageDialog(null, "La cantidad no es válida.");
                 return;

@@ -2,10 +2,13 @@ package Ventanas;
 
 import Entidades.Emprendimiento;
 import Entidades.Persona;
+import Entidades.Usuario;
+import EstructurasDeDatos.ElementoDeNodo;
 import Servicios.ManejadorDeGrafo;
 
 import javax.swing.*;
 import java.awt.event.WindowEvent;
+import java.util.Objects;
 
 public class RegistrarUsuario extends Ventana {
     private JPanel panel1;
@@ -42,6 +45,11 @@ public class RegistrarUsuario extends Ventana {
             String usuario = txtUsuario.getText();
             String contrasena = txtContrasenia.getText();
 
+            if (!comprobarUsuarioLibre()) {
+                JOptionPane.showMessageDialog(null, "Este usuario ya existe.");
+                return;
+            }
+
             if (rbPersona.isSelected()) {
                 String nombre = txtNombrePersona.getText();
                 String cedula = txtCedula.getText();
@@ -65,5 +73,16 @@ public class RegistrarUsuario extends Ventana {
             }
             this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
         });
+    }
+
+    private boolean comprobarUsuarioLibre() {
+        for (ElementoDeNodo elementoDeNodo : ManejadorDeGrafo.getGrafo().getValues()) {
+            if (elementoDeNodo instanceof Usuario) {
+                if (Objects.equals(((Usuario) elementoDeNodo).getUsuario(), txtUsuario.getText())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

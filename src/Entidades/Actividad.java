@@ -32,6 +32,7 @@ public class Actividad implements EstructurasDeDatos.ElementoDeNodo {
             capacidad--;
             return true;
         }
+
         return false;
     }
 
@@ -78,7 +79,6 @@ public class Actividad implements EstructurasDeDatos.ElementoDeNodo {
         return nombreEmprendimiento;
     }
 
-
     public int getPersonasInscritas() {
         int cantidad = 0;
         for (ElementoDeNodo elementoDeNodo : ManejadorDeGrafo.getGrafo().getConexiones(this)) {
@@ -101,17 +101,8 @@ public class Actividad implements EstructurasDeDatos.ElementoDeNodo {
         return cantidad != 0 ? suma / cantidad : 0;
     }
 
-    public boolean agregarForo(Foro foro) {
-        if (foro == null) {
-            return false;
-        }
-
-        ManejadorDeGrafo.getGrafo().agregarConexion(foro, foro.getActividad());
-        return true;
-    }
-
-    public boolean eliminarForo(Foro foro) {
-        return ManejadorDeGrafo.getGrafo().eliminarConexion(this, foro);
+    public void agregarForo(Foro foro) {
+        ManejadorDeGrafo.getGrafo().agregarConexion(foro, this);
     }
 
     public ArrayList<Foro> visualizarForos() {

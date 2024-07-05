@@ -1,28 +1,32 @@
 package Entidades;
 
 import EstructurasDeDatos.ElementoDeNodo;
+import Servicios.ManejadorDeGrafo;
 
 import java.time.LocalDateTime;
 
 import java.time.format.DateTimeFormatter;
 
 public class Publicacion  implements ElementoDeNodo {
-    private Persona autor;
-    private String comentario;
-    private Foro foro;
+    private final String comentario;
 
-    private LocalDateTime fecha_hora;
+    private final LocalDateTime fechaHora;
 
+    private final int numeroComentario;
+
+    private final String id;
 
     public Publicacion(Persona autor, String comentario, Foro foro) {
-        this.autor = autor;
+        this.numeroComentario = foro.getCantidadComentarios() + 1;
+
+        this.id = foro.getIdentificador() + autor.getIdentificador() + numeroComentario;
+
         this.comentario = comentario;
-        this.foro = foro;
-        this.fecha_hora=LocalDateTime.now();
+        this.fechaHora = LocalDateTime.now();
     }
 
     public Persona getAutor() {
-        return autor;
+        return (Persona) ManejadorDeGrafo.getGrafo().getConexiones(this).get(0);
     }
 
     public String getComentario() {
@@ -30,21 +34,21 @@ public class Publicacion  implements ElementoDeNodo {
     }
 
     public Foro getForo() {
-        return foro;
+        return (Foro) ManejadorDeGrafo.getGrafo().getConexiones(this).get(1);
     }
 
-    public LocalDateTime getFecha_hora() {
-        return fecha_hora;
+    public LocalDateTime getFechaHora() {
+        return fechaHora;
     }
 
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return  "Autor=" + autor + " \nComentario='" + comentario +"\n"+ "\nFecha y Hora='" + fecha_hora.format(formatter) + "\n";
+        return getAutor().getNombre() + ": " + comentario + "\n" + fechaHora.format(formatter) + "\n";
     }
 
     @Override
     public String getIdentificador() {
-        return foro.getIdentificador()+autor.getIdentificador();
-}
+        return id;
+    }
 }

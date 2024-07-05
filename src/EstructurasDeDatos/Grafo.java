@@ -88,7 +88,7 @@ public class Grafo {
                 publicaciones.add((Publicacion) elemento);
             }
         }
-        Collections.sort(publicaciones, Comparator.comparing(Publicacion::getFecha_hora));
+        Collections.sort(publicaciones, Comparator.comparing(Publicacion::getFechaHora));
         return publicaciones;
     }
 }

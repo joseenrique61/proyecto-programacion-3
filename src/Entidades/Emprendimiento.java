@@ -26,13 +26,8 @@ public class Emprendimiento extends Usuario implements ElementoDeNodo {
         return ubicacion;
     }
 
-    public boolean addActividad(Actividad actividad){
-        if (!ManejadorDeGrafo.getGrafo().agregarElemento(actividad)) {
-            JOptionPane.showMessageDialog(null, "Ya existe una actividad con este nombre.");
-            return false;
-        }
+    public void addActividad(Actividad actividad){
         ManejadorDeGrafo.getGrafo().agregarConexion(actividad, this);
-        return true;
     }
 
     public ArrayList<Actividad> getActividades() {
