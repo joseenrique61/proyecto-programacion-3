@@ -89,10 +89,17 @@ public class VentanaEmprendimiento extends Ventana {
                 return;
             }
 
-            if (!actividad.agregarPersona((Persona) ManejadorDeGrafo.getGrafo().getElemento(txtCedula.getText()))) {
+            Persona persona = (Persona) ManejadorDeGrafo.getGrafo().getElemento(txtCedula.getText());
+            if (persona == null) {
                 JOptionPane.showMessageDialog(null, "No se ha encontrado la cédula.");
                 return;
             }
+
+            if (!actividad.agregarPersona(persona)) {
+                JOptionPane.showMessageDialog(null, "No se puede agregar a esta persona a la actividad.");
+                return;
+            }
+
             JOptionPane.showMessageDialog(null, "Persona agregada.");
             txtCedula.setText("");
         });

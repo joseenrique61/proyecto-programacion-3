@@ -24,15 +24,23 @@ public class Actividad implements EstructurasDeDatos.ElementoDeNodo {
     }
 
     public boolean agregarPersona(Persona persona) {
-        if (persona == null) {
+        if (capacidad <= 0) {
             return false;
         }
-        ManejadorDeGrafo.getGrafo().agregarConexion(persona, this);
-        return true;
+
+        if (ManejadorDeGrafo.getGrafo().agregarConexion(persona, this)) {
+            capacidad--;
+            return true;
+        }
+        return false;
     }
 
     public boolean eliminarPersona(Persona persona) {
-        return ManejadorDeGrafo.getGrafo().eliminarConexion(this, persona);
+        if (ManejadorDeGrafo.getGrafo().eliminarConexion(this, persona)) {
+            capacidad++;
+            return true;
+        }
+        return false;
     }
 
     public ArrayList<Persona> visualizarPersonas() {

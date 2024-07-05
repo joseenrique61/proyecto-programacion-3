@@ -31,15 +31,12 @@ public class VentanaPersona extends Ventana {
     DefaultTableModel dtm = new DefaultTableModel();
     DefaultTableModel dtm2 = new DefaultTableModel();
     private Persona persona;
-    private Emprendimiento emprendimiento;
     DefaultListModel<String> modelo = new DefaultListModel<>();
     DefaultListModel<String> modeloSeguidas = new DefaultListModel<>();
 
     protected VentanaPersona(Ventana ventana, Persona persona) {
-        super("Ventana Persona", 500, 500, null);
+        super("Ventana Persona", 500, 500, ventana);
         this.setContentPane(panel1);
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.emprendimiento = null;
         this.persona = persona;
 
         // Inicializa los modelos y las listas
@@ -48,6 +45,8 @@ public class VentanaPersona extends Ventana {
         listActividadesCalificar.setModel(modeloSeguidas);
 
         mostrarActividades();
+        mostrarActividadesSeguidas();
+        actualizarCboActividadesForo();
 
         for (int i = 1; i <= 10; i++) {
             cboElegirCalificacion.addItem(i);
@@ -61,7 +60,7 @@ public class VentanaPersona extends Ventana {
                     String[] partes = actividadSeleccionada.split("[:\\-]");
                     String actividadNombre = partes[4].trim();
                     String actividadEmprendimiento = partes[2].trim();
-                    if (reducirCapacidad(actividadNombre, actividadEmprendimiento)) {
+                    if (agregarPersonaAActividad(actividadNombre, actividadEmprendimiento)) {
                         agregarActividadSeguida(actividadNombre, actividadEmprendimiento);
                         mostrarActividades();
                         actualizarCboActividadesForo();
@@ -98,6 +97,7 @@ public class VentanaPersona extends Ventana {
                 JOptionPane.showMessageDialog(null, "Seleccione una actividad del foro.");
             }
         });
+
         btnEliminar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -125,6 +125,19 @@ public class VentanaPersona extends Ventana {
                         "    -CAPACIDAD: " + ((Actividad) nodo).getCapacidad() +
                         "    -DESCRIPCIÓN: " + ((Actividad) nodo).getDescripcion();
                 modelo.addElement(actividad);
+            }
+        }
+    }
+
+    private void mostrarActividadesSeguidas() {
+        modeloSeguidas.clear();
+        for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getConexiones(persona)) {
+            if (nodo instanceof Actividad) {
+                String actividad = "-ANFITRION: " + ((Actividad) nodo).getEmprendimientoAsociado() +
+                        "    -ACTIVIDAD: " + ((Actividad) nodo).getNombre() +
+                        "    -CAPACIDAD: " + ((Actividad) nodo).getCapacidad() +
+                        "    -DESCRIPCIÓN: " + ((Actividad) nodo).getDescripcion();
+                modeloSeguidas.addElement(actividad);
             }
         }
     }
@@ -162,17 +175,20 @@ public class VentanaPersona extends Ventana {
         }
     }
 
-    private boolean reducirCapacidad(String nombreActi, String emprendimientoAso) {
+    private boolean agregarPersonaAActividad(String nombreActi, String emprendimientoAso) {
         for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
             if (nodo instanceof Actividad &&
                     ((Actividad) nodo).getNombre().equals(nombreActi) &&
                     ((Actividad) nodo).getEmprendimientoAsociado().equals(emprendimientoAso)) {
 
                 if (((Actividad) nodo).getCapacidad() <= 0) {
-                    JOptionPane.showMessageDialog(null, "YA NO HAY CAPACIDAD PARA LA ACTIVIDAD");
+                    JOptionPane.showMessageDialog(null, "Ya no hay espacio en esta actividad.");
                     return false;
                 }
-                ((Actividad) nodo).setCapacidad(((Actividad) nodo).getCapacidad() - 1);
+                if (((Actividad) nodo).agregarPersona(persona)) {
+                    JOptionPane.showMessageDialog(null, "Ya estás inscrito en esta actividad.");
+                    return false;
+                }
                 return true;
             }
         }
@@ -183,12 +199,13 @@ public class VentanaPersona extends Ventana {
         DefaultListModel modeloEliminar = (DefaultListModel) listActividadesSeguidas.getModel();
         modeloEliminar.remove(listActividadesSeguidas.getSelectedIndex());
     }
+
     private boolean aumentarCapacidad(String nombreActi, String emprendimientoAso) {
         for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
             if (nodo instanceof Actividad &&
                     ((Actividad) nodo).getNombre().equals(nombreActi) &&
                     ((Actividad) nodo).getEmprendimientoAsociado().equals(emprendimientoAso)) {
-                    ((Actividad) nodo).setCapacidad(((Actividad) nodo).getCapacidad() + 1);
+                    ((Actividad) nodo).eliminarPersona(persona);
                 return true;
             }
         }
@@ -198,7 +215,7 @@ public class VentanaPersona extends Ventana {
     /////////////////////////////////////////////////////////////////////
     private void actualizarCboActividadesForo() {
         cboActividadesForo.removeAllItems();
-        for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
+        for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getConexiones(persona)) {
             if (nodo instanceof Actividad) {
                 cboActividadesForo.addItem(((Actividad) nodo).getNombre());
             }

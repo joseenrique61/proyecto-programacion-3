@@ -49,6 +49,10 @@ public class Grafo {
             return false;
         }
 
+        if (grafo.get(elemento1.getIdentificador()).getConexiones().contains(elemento2)) {
+            return false;
+        }
+
         grafo.get(elemento1.getIdentificador()).getConexiones().add(elemento2);
         grafo.get(elemento2.getIdentificador()).getConexiones().add(elemento1);
         return true;
@@ -64,6 +68,10 @@ public class Grafo {
 
     public boolean eliminarConexion(ElementoDeNodo elemento1, ElementoDeNodo elemento2) {
         if (grafo.get(elemento1.getIdentificador()) == null || grafo.get(elemento2.getIdentificador()) == null) {
+            return false;
+        }
+
+        if (!grafo.get(elemento1.getIdentificador()).getConexiones().contains(elemento2)) {
             return false;
         }
 

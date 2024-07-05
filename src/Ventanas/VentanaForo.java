@@ -20,7 +20,6 @@ public class VentanaForo extends Ventana {
     protected VentanaForo(Ventana ventana, String actividadNombre, String emprendimientoAsociado) {
         super("Foro: " + actividadNombre, 400, 400, ventana);
         this.setContentPane(VentanitaForo);
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.foro = foro;
         this.publicacion = null;
 
@@ -49,6 +48,5 @@ public class VentanaForo extends Ventana {
         ManejadorDeGrafo.getGrafo().agregarElemento(publicacion1);
         ManejadorDeGrafo.getGrafo().agregarConexion(publicacion1, persona);
         JOptionPane.showMessageDialog(null, "Publicación subida exitosamente.");
-      ;
     }
 }
