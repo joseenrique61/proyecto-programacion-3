@@ -25,6 +25,7 @@ public class VentanaPersona extends Ventana {
     private JButton btnIngresarAForo;
     private JComboBox<String> cboActividadesForo;
     private JList list1;
+    private JButton btnEliminar;
     private JTextField txtNombreForo;
     private JTable tbActividadesSeguidas;
     DefaultTableModel dtm = new DefaultTableModel();
@@ -60,7 +61,7 @@ public class VentanaPersona extends Ventana {
                     String[] partes = actividadSeleccionada.split("[:\\-]");
                     String actividadNombre = partes[4].trim();
                     String actividadEmprendimiento = partes[2].trim();
-                    if (actualizarCapacidad(actividadNombre, actividadEmprendimiento)) {
+                    if (reducirCapacidad(actividadNombre, actividadEmprendimiento)) {
                         agregarActividadSeguida(actividadNombre, actividadEmprendimiento);
                         mostrarActividades();
                         actualizarCboActividadesForo();
@@ -95,6 +96,22 @@ public class VentanaPersona extends Ventana {
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Seleccione una actividad del foro.");
+            }
+        });
+        btnEliminar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String actividadSeleccionada = listActividadesSeguidas.getSelectedValue();
+                if (actividadSeleccionada != null) {
+                    String[] partes = actividadSeleccionada.split("[:\\-]");
+                    String actividadNombre = partes[4].trim();
+                    String actividadEmprendimiento = partes[2].trim();
+                    if (aumentarCapacidad(actividadNombre, actividadEmprendimiento)) {
+                        eliminarActividadSeguida();
+                        mostrarActividades();
+                        actualizarCboActividadesForo();
+                    }
+                }
             }
         });
     }
@@ -145,7 +162,7 @@ public class VentanaPersona extends Ventana {
         }
     }
 
-    private boolean actualizarCapacidad(String nombreActi, String emprendimientoAso) {
+    private boolean reducirCapacidad(String nombreActi, String emprendimientoAso) {
         for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
             if (nodo instanceof Actividad &&
                     ((Actividad) nodo).getNombre().equals(nombreActi) &&
@@ -161,6 +178,24 @@ public class VentanaPersona extends Ventana {
         }
         return false;
     }
+
+    private void eliminarActividadSeguida() {
+        DefaultListModel modeloEliminar = (DefaultListModel) listActividadesSeguidas.getModel();
+        modeloEliminar.remove(listActividadesSeguidas.getSelectedIndex());
+    }
+    private boolean aumentarCapacidad(String nombreActi, String emprendimientoAso) {
+        for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
+            if (nodo instanceof Actividad &&
+                    ((Actividad) nodo).getNombre().equals(nombreActi) &&
+                    ((Actividad) nodo).getEmprendimientoAsociado().equals(emprendimientoAso)) {
+                    ((Actividad) nodo).setCapacidad(((Actividad) nodo).getCapacidad() + 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////
     private void actualizarCboActividadesForo() {
         cboActividadesForo.removeAllItems();
         for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
