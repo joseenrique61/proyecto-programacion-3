@@ -53,6 +53,15 @@ public class RegistrarUsuario extends Ventana {
             if (rbPersona.isSelected()) {
                 String nombre = txtNombrePersona.getText();
                 String cedula = txtCedula.getText();
+
+                try {
+                    Long.parseLong(cedula);
+                }
+                catch (NumberFormatException exception) {
+                    JOptionPane.showMessageDialog(null, "La cédula es inválida.");
+                    return;
+                }
+
                 if (!ManejadorDeGrafo.getGrafo().agregarElemento(new Persona(usuario,contrasena,cedula,nombre))) {
                     JOptionPane.showMessageDialog(null, "Ya existe una persona con esta cédula.");
                     return;

@@ -3,6 +3,8 @@ package Entidades;
 import EstructurasDeDatos.ElementoDeNodo;
 import Servicios.ManejadorDeGrafo;
 
+import java.util.ArrayList;
+
 
 public class Foro implements ElementoDeNodo {
     private final String id;
@@ -39,5 +41,18 @@ public class Foro implements ElementoDeNodo {
         }
 
         return comentarios;
+    }
+
+    public void borrarTodosLosComentarios() {
+        ArrayList<ElementoDeNodo> publicaciones = new ArrayList<>();
+        for (ElementoDeNodo elementoDeNodo : ManejadorDeGrafo.getGrafo().getConexiones(this)) {
+            if (elementoDeNodo instanceof Publicacion) {
+                publicaciones.add(elementoDeNodo);
+            }
+        }
+
+        for (ElementoDeNodo elementoDeNodo : publicaciones) {
+            ManejadorDeGrafo.getGrafo().eliminarElemento(elementoDeNodo);
+        }
     }
 }

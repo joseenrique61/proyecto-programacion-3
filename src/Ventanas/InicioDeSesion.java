@@ -15,6 +15,7 @@ public class InicioDeSesion extends Ventana {
     private JTextField txtContrasena;
     private JButton iniciarSesionButton;
     private JButton registrarNuevoUsuarioButton;
+    private JButton verGrafoButton;
 
     public InicioDeSesion() {
         super("Inicio de sesión", 400, 400, null);
@@ -43,6 +44,11 @@ public class InicioDeSesion extends Ventana {
             RegistrarUsuario registrarUsuario = new RegistrarUsuario(this);
             registrarUsuario.setVisible(true);
         });
+
+        verGrafoButton.addActionListener(e -> {
+            VisualizarGrafo visualizarGrafo = new VisualizarGrafo(this);
+            visualizarGrafo.setVisible(true);
+        });
     }
     private void abrirVentanaDeUsuario(Usuario usuario) {
         if (usuario instanceof Persona) {
@@ -56,5 +62,4 @@ public class InicioDeSesion extends Ventana {
             ventanaAdministrador.setVisible(true);
         }
     }
-
 }

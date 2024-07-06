@@ -79,16 +79,4 @@ public class Grafo {
         grafo.get(elemento2.getIdentificador()).getConexiones().remove(elemento1);
         return true;
     }
-
-    public List<Publicacion> obtenerPublicacionesOrdenadasPorFecha() {
-        List<Publicacion> publicaciones = new ArrayList<>();
-        for (Nodo nodo : grafo.values()) {
-            ElementoDeNodo elemento = nodo.getNodo();
-            if (elemento instanceof Publicacion) {
-                publicaciones.add((Publicacion) elemento);
-            }
-        }
-        Collections.sort(publicaciones, Comparator.comparing(Publicacion::getFechaHora));
-        return publicaciones;
-    }
 }

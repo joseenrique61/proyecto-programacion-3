@@ -40,8 +40,12 @@ public class Emprendimiento extends Usuario implements ElementoDeNodo {
         return actividades;
     }
 
-    public void deleteActividad(Actividad actividad){
+    public void deleteActividad(Actividad actividad) {
+        Foro foro = (Foro) ManejadorDeGrafo.getGrafo().getConexiones(actividad).get(1);
+        foro.borrarTodosLosComentarios();
+
         ManejadorDeGrafo.getGrafo().eliminarElemento(actividad);
+        ManejadorDeGrafo.getGrafo().eliminarElemento(foro);
     }
 
     public int getCantidadPersonasEnActividades() {
