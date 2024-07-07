@@ -29,7 +29,7 @@ public class VentanaCalificacion extends Ventana {
     DefaultListModel<String> modeloSeguidas = new DefaultListModel<>();
 
     protected VentanaCalificacion(Ventana ventana) {
-        super("Calificación", 400, 400, ventana);
+        super("Calificación", 500, 500, ventana);
         this.setContentPane(panel1);
 
         btnElegirActividad.addActionListener(new ActionListener() {

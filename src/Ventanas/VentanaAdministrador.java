@@ -1,13 +1,15 @@
 package Ventanas;
 
-import Entidades.Emprendimiento;
-import Entidades.Persona;
-import Entidades.Usuario;
+import Entidades.*;
 import EstructurasDeDatos.ElementoDeNodo;
 import Servicios.ManejadorDeGrafo;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VentanaAdministrador extends Ventana {
     private JTabbedPane panel1;
@@ -17,6 +19,12 @@ public class VentanaAdministrador extends Ventana {
     private JComboBox<Usuario> cbUsuario;
     private JTextArea taUsuario;
     private JButton btnEliminar;
+    private JButton btnBuscarComentarios;
+    private JButton btnEliminarComentario;
+    private JList<String> list1;
+    private JPanel panelComentarios;
+    DefaultListModel<String> comentariosModel = new DefaultListModel<>();
+
 
     protected VentanaAdministrador(Ventana inicioDeSesion) {
         super("Administrador", 500, 500, inicioDeSesion);
@@ -49,6 +57,18 @@ public class VentanaAdministrador extends Ventana {
             taUsuario.setText("");
 
             actualizar();
+        });
+        btnBuscarComentarios.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostrarComentarios();
+            }
+        });
+        btnEliminarComentario.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                eliminarComentarioSeleccionado();
+            }
         });
     }
 
@@ -101,4 +121,58 @@ public class VentanaAdministrador extends Ventana {
         setTableEmprendimiento();
         setComboBoxUsuarios();
     }
+    private void mostrarComentarios() {
+        comentariosModel.clear();
+        for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
+            if (nodo instanceof Actividad) {
+                Actividad actividad = (Actividad) nodo;
+                for (ElementoDeNodo conexion : ManejadorDeGrafo.getGrafo().getConexiones(actividad)) {
+                    if (conexion instanceof Calificacion) {
+                        Calificacion calificacion = (Calificacion) conexion;
+                        String comentario = "Actividad: " + actividad.getNombre()
+                                + "\nCalificación: " + calificacion.getPuntuacion()
+                                + "\nComentario: " + calificacion.getComentario();
+                        comentariosModel.addElement(comentario);
+                    }
+                }
+            }
+        }
+        list1.setModel(comentariosModel);
+    }
+    private void eliminarComentarioSeleccionado() {
+        int selectedIndex = list1.getSelectedIndex();
+        if (selectedIndex != -1) {
+            String comentarioSeleccionado = comentariosModel.get(selectedIndex);
+
+            for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
+                if (nodo instanceof Actividad) {
+                    Actividad actividad = (Actividad) nodo;
+                    List<ElementoDeNodo> conexionesAEliminar = new ArrayList<>();
+                    for (ElementoDeNodo conexion : ManejadorDeGrafo.getGrafo().getConexiones(actividad)) {
+                        if (conexion instanceof Calificacion) {
+                            Calificacion calificacion = (Calificacion) conexion;
+                            String comentario = "Actividad: " + actividad.getNombre()
+                                    + "\nCalificación: " + calificacion.getPuntuacion()
+                                    + "\nComentario: " + calificacion.getComentario();
+                            if (comentario.equals(comentarioSeleccionado)) {
+                                conexionesAEliminar.add(calificacion);
+                            }
+                        }
+                    }
+                    for (ElementoDeNodo conexion : conexionesAEliminar) {
+                        ManejadorDeGrafo.getGrafo().eliminarConexion(actividad, conexion);
+                    }
+                }
+            }
+
+            comentariosModel.remove(selectedIndex);
+            JOptionPane.showMessageDialog(null, "Comentario eliminado.");
+        } else {
+            JOptionPane.showMessageDialog(null, "Selecciona un comentario para eliminar.");
+        }
+    }
+
+
+
+
 }
