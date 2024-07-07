@@ -130,8 +130,8 @@ public class VentanaAdministrador extends Ventana {
                     if (conexion instanceof Calificacion) {
                         Calificacion calificacion = (Calificacion) conexion;
                         String comentario = "Actividad: " + actividad.getNombre()
-                                + "\nCalificación: " + calificacion.getPuntuacion()
-                                + "\nComentario: " + calificacion.getComentario();
+                                + ", Calificación: " + calificacion.getPuntuacion()
+                                + ", Comentario: " + calificacion.getComentario();
                         comentariosModel.addElement(comentario);
                     }
                 }
@@ -147,20 +147,23 @@ public class VentanaAdministrador extends Ventana {
             for (ElementoDeNodo nodo : ManejadorDeGrafo.getGrafo().getValues()) {
                 if (nodo instanceof Actividad) {
                     Actividad actividad = (Actividad) nodo;
-                    List<ElementoDeNodo> conexionesAEliminar = new ArrayList<>();
+                    Calificacion calificacionAEliminar = null;
                     for (ElementoDeNodo conexion : ManejadorDeGrafo.getGrafo().getConexiones(actividad)) {
                         if (conexion instanceof Calificacion) {
                             Calificacion calificacion = (Calificacion) conexion;
                             String comentario = "Actividad: " + actividad.getNombre()
-                                    + "\nCalificación: " + calificacion.getPuntuacion()
-                                    + "\nComentario: " + calificacion.getComentario();
+                                    + ", Calificación: " + calificacion.getPuntuacion()
+                                    + ", Comentario: " + calificacion.getComentario();
                             if (comentario.equals(comentarioSeleccionado)) {
-                                conexionesAEliminar.add(calificacion);
+                                calificacionAEliminar = calificacion;
+                                break;
                             }
                         }
                     }
-                    for (ElementoDeNodo conexion : conexionesAEliminar) {
-                        ManejadorDeGrafo.getGrafo().eliminarConexion(actividad, conexion);
+
+                    if (calificacionAEliminar != null) {
+                        ManejadorDeGrafo.getGrafo().eliminarElemento(calificacionAEliminar);
+                        break;
                     }
                 }
             }

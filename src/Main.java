@@ -4,7 +4,7 @@ import Ventanas.InicioDeSesion;
 
 public class     Main {
     public static void main(String[] args) {
-//        crearNodosDePrueba();
+        crearNodosDePrueba();
 
         InicioDeSesion inicioDeSesion = new InicioDeSesion();
         inicioDeSesion.setVisible(true);

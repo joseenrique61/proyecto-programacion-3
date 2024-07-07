@@ -136,6 +136,7 @@
             </constraints>
             <properties>
               <model/>
+              <selectionMode value="0"/>
             </properties>
           </component>
         </children>
