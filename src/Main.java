@@ -4,7 +4,7 @@ import Ventanas.InicioDeSesion;
 
 public class     Main {
     public static void main(String[] args) {
-        crearNodosDePrueba();
+//        crearNodosDePrueba();
 
         InicioDeSesion inicioDeSesion = new InicioDeSesion();
         inicioDeSesion.setVisible(true);
@@ -49,6 +49,7 @@ public class     Main {
 
         Publicacion publicacion = new Publicacion(persona, "Publicación calidosa", foro);
         ManejadorDeGrafo.getGrafo().agregarElemento(publicacion);
+        ManejadorDeGrafo.getGrafo().agregarConexion(publicacion, persona);
         foro.agregarComentario(publicacion);
     }
 }
