@@ -35,7 +35,7 @@ public class VentanaPersona extends Ventana {
     DefaultListModel<String> modeloSeguidas = new DefaultListModel<>();
 
     protected VentanaPersona(Ventana ventana, Persona persona) {
-        super("Ventana Persona", 500, 500, ventana);
+        super("Ventana Persona", 500, 700, ventana);
         this.setContentPane(panel1);
         this.persona = persona;
 
